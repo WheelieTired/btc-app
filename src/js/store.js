@@ -19,6 +19,7 @@ if ( process.env.NODE_ENV === 'development' ) {
   args.push( devTools );
 }
 
+// TODO: HERE IS WHERE THE STORE IS CREATED!!!!!!!!!!!!!!!
 export default compose.apply( null, args )( createStore )( combineReducers( {
   notifications,
   points,
