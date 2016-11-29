@@ -10,17 +10,17 @@ import account from './reducers/account';
 import drawer from './reducers/btc-drawer';
 
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
+import { persistStore, autoRehydrate } from 'redux-persist'
 import thunk from 'redux-thunk';
 
 const devTools = typeof window === 'object' && typeof window.devToolsExtension !== 'undefined' ? window.devToolsExtension() : f => f;
 
-const args = [ applyMiddleware( thunk ) ];
+const args = [ autoRehydrate(), applyMiddleware( thunk )];
 if ( process.env.NODE_ENV === 'development' ) {
   args.push( devTools );
 }
 
-// TODO: HERE IS WHERE THE STORE IS CREATED!!!!!!!!!!!!!!!
-export default compose.apply( null, args )( createStore )( combineReducers( {
+const theStore = compose.apply( null, args )( createStore )( combineReducers( {
   notifications,
   points,
   tracks,
@@ -30,3 +30,7 @@ export default compose.apply( null, args )( createStore )( combineReducers( {
   filters,
   account,
 drawer } ) );
+
+persistStore(theStore);
+
+export default theStore;
