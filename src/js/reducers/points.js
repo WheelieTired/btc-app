@@ -196,7 +196,7 @@ export function loadPoint( id ) {
 }
 
 //Calling the server API flag
-export function flagPoint( id ) {
+export function flagPoint( id, reason ) {
   return ( dispatch, getState ) => {
     const {account} = getState();
     return new Promise( ( resolve, reject ) => {
@@ -205,7 +205,7 @@ export function flagPoint( id ) {
     request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     request.setRequestHeader('authorization', 'JWT ' + account.login.token);
 
-    var jsonData = JSON.stringify({ "pointId": id });
+    var jsonData = JSON.stringify({ "pointId": id, "flagReason": reason });
 
     request.onload = event => {
       if ( request.status === 200 ) {

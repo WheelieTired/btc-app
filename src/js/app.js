@@ -44,6 +44,8 @@ import PeekPointCard from './components/point-card/peek-point-card';
 import ViewPointCard from './components/point-card/view-point-card';
 import RatingPointCard from './components/point-card/rating-point-card';
 
+import FlagPointCard from './components/point-card/flag-point-card';
+
 // A hash-based history module for use with the react router
 import history from './history';
 
@@ -92,6 +94,8 @@ document.addEventListener( 'deviceReady', ( ) => {
                 component={ ViewPointCard } />
               <Route path="rate-point/:id"
                 component={ RatingPointCard } />
+              <Route path="flag-point/:id"
+                component={ FlagPointCard } />  
             </Route>
             <Route path="list"
               component={ ListPage } />

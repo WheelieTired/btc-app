@@ -80,11 +80,6 @@ export class PointCard extends Component {
     return ( ) => navigateWithId( prefix, point );
   }
 
-  callToFlagPoint( id ) {
-    const {flagPoint} = this.props;
-    return ( ) => flagPoint( id );
-  }
-
   static openUntil( service ) {
     const schedule = new Schedule( service.schedule );
     if (schedule.hasAnyHoursAdded()) {
@@ -135,7 +130,9 @@ export class PointCard extends Component {
     const point = this.point;
     const {type} = Point.uri( point._id );
 
-    let update, rate;
+    let update, rate, flag;
+
+
     if ( type === 'service' ) {
       update = (
         <MenuItem primaryText='Update Information'
@@ -147,9 +144,9 @@ export class PointCard extends Component {
       );
     }
 
-      let flag = (
+      flag = (
       <MenuItem primaryText='Flag'
-          onTouchTap={ this.callToFlagPoint( point._id ) } />
+          onTouchTap={ this.navigate( 'flag-point' ) } /> 
       );
 
     const button = (

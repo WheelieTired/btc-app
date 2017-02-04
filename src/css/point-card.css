@@ -55,7 +55,7 @@
  * Overriding <Card>'s overflow-y property breaks the page in WebKit.
  * It is unnecessary as both Chrome and Safari handle scrolling correctly.
  */
-.point-card--view, .point-card--rate {
+.point-card--view, .point-card--rate, .point-card--flag {
     display: flex;
     flex-grow: 1;
     max-width: 750px !important;
@@ -159,6 +159,13 @@
  */
 .point-card.point-card--rate .point-card__media {
     display: none;
+}
+
+/*
+ * In flag mode, do not show the point's image.
+ */
+.point-card.point-card--flag .point-card__media {
+    display: none;   
 }
 
 /*
