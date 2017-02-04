@@ -24,7 +24,7 @@ export class FlagPointCard extends PointCard {
   }
 
   getCardState() {
-    return 'point-card--rate';
+    return 'point-card--flag';
   }
 
   getCardAction() {
@@ -33,15 +33,10 @@ export class FlagPointCard extends PointCard {
              onTouchTap={ goBack } />;
   }
 
-  onCommentUpdate( event ) {
-    const {setComment} = this.props;
-    const comment = event.target.value;
-    setComment( comment );
-  }
   getCardContent() {
     return (
       <div className="point-card__content">
-        { this.getOtherEntry() }
+        { this.getFlagEntry() }
       </div>
       );
   }
@@ -51,14 +46,14 @@ callToFlagPoint( values ) {
     flagPoint( this.point._id, values.reason );
   }
 
-  getOtherEntry() {
+  getFlagEntry() {
     // See the FormBlock class in block.js for how this tree works.
     const fields = [ {
-      rowClassName: 'other-entry',
+      rowClassName: 'flag-entry',
       row: [ {
         name: 'reason',
         hint: 'Why are you flagging this point?',
-        className: 'other-entry__flag'
+        className: 'entry__flagging'
       } ]
     } ];
     return (
