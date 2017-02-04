@@ -1,4 +1,5 @@
 /*global FileTransfer*/
+import { cloneDeep } from 'lodash';
 import path from 'path';
 import { fromJS } from 'immutable';
 
@@ -47,31 +48,36 @@ const initState = fromJS( {
 } );
 
 export default function reducer( state = initState, action ) {
+  let newState = cloneDeep(state);
   switch ( action.type ) {
   case REQUEST:
-    return state.mergeDeepIn( [ action.id ], {
+    return newState.mergeDeepIn( [ action.id ], {
       isFetching: action.progress
     } );
   case RECEIVE:
-    return state.mergeDeepIn( [ action.id ], {
+    return newState.mergeDeepIn( [ action.id ], {
       isFetching: false,
       status: action.status
     } );
   case CLEAR:
-    return state.mergeDeepIn( [ action.id ], {
+    return newState.mergeDeepIn( [ action.id ], {
       status: 'absent'
     } );
   case DEACTIVATE:
-    return state.mergeDeepIn( [ action.id ], {
+    return newState.mergeDeepIn( [ action.id ], {
       active: false
     } );
   case ACTIVATE:
-    return state.mergeDeepIn( [ action.id ], {
+    return newState.mergeDeepIn( [ action.id ], {
       active: true
     } );
   default:
+    // By default, return the original, uncloned state.
+    // This makes sure that autorehydrate doesn't drop out.
     return state;
   }
+  // Catch any cases that decide to mutate without returning.
+  return newState;
 }
 
 /*

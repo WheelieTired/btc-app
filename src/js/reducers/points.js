@@ -20,8 +20,6 @@ export const RECEIVE_REPLICATION = 'btc-app/points/RECEIVE_REPLICATION';
 export const REQUEST_PUBLISH = 'btc-app/points/REQUEST_PUBLISH';
 export const RECEIVE_PUBLISH = 'btc-app/points/RECEIVE_PUBLISH';
 
-const UPDATED_POINTS_LOCALSTORAGE_KEY = 'UPDATED_POINTS_LOCALSTORAGE_KEY'
-
 // # Points Reducer
 // The points reducer holds the points, their comments, and relevant metadata
 //
@@ -40,54 +38,53 @@ const initState = {
 };
 
 export default function reducer( state = initState, action ) {
-  state = cloneDeep( state );
+  let newState = cloneDeep( state );
   const idPath = 'points.' + action.id;
   switch ( action.type ) {
   case UPDATE_SERVICE:
   case ADD_SERVICE:
   case ADD_ALERT:
     // Make sure the point isn't already in our updated list.
-    if(state.publish.updated.indexOf(action.id) < 0) {
-      state.publish.updated.push(action.id);
+    if(newState.publish.updated.indexOf(action.id) < 0) {
+      let updatedPoints = cloneDeep( newState.publish.updated );
+      updatedPoints.push(action.id);
+      set( newState, 'publish.updated', updatedPoints );
     }
-    
-    localStorage.setItem(UPDATED_POINTS_LOCALSTORAGE_KEY, JSON.stringify(state.publish.updated));
-    set( state, idPath, action.point );
+    set( newState, idPath, action.point );
     break;
   case RESCIND_POINT:
-    unset( state, idPath );
+    unset( newState, idPath );
     break;
   case RELOAD_POINTS:
-    var updatedPointString = localStorage.getItem(UPDATED_POINTS_LOCALSTORAGE_KEY);
-    if (updatedPointString != null) {
-      state.publish.updated = JSON.parse(updatedPointString);
-    }
-    set( state, 'points', action.points );
+    set( newState, 'points', action.points );
     break;
   case REQUEST_LOAD_POINT:
-    set( state, idPath, { isFetching: true } );
+    set( newState, idPath, { isFetching: true } );
     break;
   case RECEIVE_LOAD_POINT:
-    set( state, idPath, { isFetching: false, ...action.point } );
+    set( newState, idPath, { isFetching: false, ...action.point } );
     break;
   case REQUEST_REPLICATION:
-    set( state, 'replication', { time: action.time, inProgress: true } );
+    set( newState, 'replication', { time: action.time, inProgress: true } );
     break;
   case RECEIVE_REPLICATION:
-    set( state, 'replication', { time: action.time, inProgress: false } );
+    set( newState, 'replication', { time: action.time, inProgress: false } );
     break;
   case REQUEST_PUBLISH:
-    set( state, 'publish.inProgress', true );
+    set( newState, 'publish.inProgress', true );
     break;
   case RECEIVE_PUBLISH:
-    set( state, 'publish.inProgress', false );
+    set( newState, 'publish.inProgress', false );
     if ( action.err == null ) {
-      state.publish.updated = [];
-      localStorage.setItem(UPDATED_POINTS_LOCALSTORAGE_KEY, JSON.stringify(state.publish.updated));
+      set( newState, 'publish.updated', [] );
     }
     break;
+  default:
+    // By default, return the original, uncloned state.
+    // This makes sure that autorehydrate doesn't drop out.
+    return state;
   }
-  return state;
+  return newState;
 }
 
 // # Generic Add & Update Logic

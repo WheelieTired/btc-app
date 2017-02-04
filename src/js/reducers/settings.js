@@ -1,4 +1,4 @@
-import { merge } from 'lodash';
+import { merge, cloneDeep } from 'lodash';
 
 const ONLINE_MODE = 'btc-app/settings/ONLINE_MODE';
 
@@ -8,12 +8,17 @@ const initState = {
 };
 
 export default function reducer( state = initState, action ) {
+  let newState = cloneDeep(state);
   switch ( action.type ) {
   case ONLINE_MODE:
-    return merge( {}, state, { onlineMode: action.onlineMode } );
+    return merge( {}, newState, { onlineMode: action.onlineMode } );
   default:
+    // By default, return the original, uncloned state.
+    // This makes sure that autorehydrate doesn't drop out.
     return state;
   }
+  // Catch any cases that decide to mutate without returning.
+  return newState;
 }
 
 /*

@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash';
 import objectAssign from 'object-assign';
 
 import { Agent } from '../util/agent';
@@ -13,12 +14,17 @@ const initState = {
 };
 
 export default function reducer( state = initState, action ) {
+  let newState = cloneDeep(state);
   switch ( action.type ) {
   case CONNECTION:
-    return objectAssign( {}, state, action.status );
+    return objectAssign( {}, newState, action.status );
   default:
+    // By default, return the original, uncloned state.
+    // This makes sure that autorehydrate doesn't drop out.
     return state;
   }
+  // Catch any cases that decide to mutate without returning.
+  return newState;
 }
 
 /**

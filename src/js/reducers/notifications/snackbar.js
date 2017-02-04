@@ -1,4 +1,4 @@
-import assign from 'lodash/assign';
+import { assign, cloneDeep } from 'lodash';
 
 export const SET_SNACKBAR = 'btc-app/dialog/SET_SNACKBAR';
 export const CLOSE_SNACKBAR = 'btc-app/dialog/CLOSE_SNACKBAR';
@@ -10,14 +10,19 @@ const initState = {
 };
 
 export default function dialog( state = initState, action ) {
+  let newState = cloneDeep(state);
   switch ( action.type ) {
   case SET_SNACKBAR:
-    return assign( {}, state, action.dialog, { open: true } );
+    return assign( {}, newState, action.dialog, { open: true } );
   case CLOSE_SNACKBAR:
     return assign( {}, initState );
   default:
+    // By default, return the original, uncloned state.
+    // This makes sure that autorehydrate doesn't drop out.
     return state;
   }
+  // Catch any cases that decide to mutate without returning.
+  return newState;
 }
 
 export function setSnackbar( dialog, timeout ) {

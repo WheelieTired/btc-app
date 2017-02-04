@@ -1,4 +1,4 @@
-import assign from 'lodash/assign';
+import { assign, cloneDeep } from 'lodash';
 
 import { Login } from 'btc-models';
 import { request } from '../../util/server';
@@ -20,9 +20,10 @@ const initState = {
 };
 
 export default function reducer( state = initState, action ) {
+  let newState = cloneDeep(state);
   switch ( action.type ) {
   case REQUEST_LOGIN:
-    return assign( {}, state, {
+    return assign( {}, newState, {
       loggedIn: false,
       email: action.email,
       password: action.password,
@@ -31,7 +32,7 @@ export default function reducer( state = initState, action ) {
       error: null
     } );
   case RECEIVE_LOGIN:
-    return assign( {}, state, {
+    return assign( {}, newState, {
       loggedIn: action.loggedIn,
       fetching: false,
       token: action.token,
@@ -40,7 +41,7 @@ export default function reducer( state = initState, action ) {
       error: action.error || null
     } );
   case FAILED_LOGIN_VALIDATION:
-    return assign( {}, state, {
+    return assign( {}, newState, {
       loggedIn: false,
       fetching: false,
       validation: action.error || []
@@ -48,8 +49,12 @@ export default function reducer( state = initState, action ) {
   case LOGOUT:
     return assign( {}, initState );
   default:
+    // By default, return the original, uncloned state.
+    // This makes sure that autorehydrate doesn't drop out.
     return state;
   }
+  // Catch any cases that decide to mutate without returning.
+  return newState;
 }
 
 // Asyncronous action creator that will ask the app server for an api

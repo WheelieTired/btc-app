@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash';
 import objectAssign from 'object-assign';
 
 export const SET_DIALOG = 'btc-app/dialog/SET_DIALOG';
@@ -12,9 +13,10 @@ const initialState = {
 };
 
 export default function dialog( state = initialState, action ) {
+  let newState = cloneDeep(state);
   switch ( action.type ) {
   case SET_DIALOG:
-    return objectAssign( state, action.dialog, { open: true } );
+    return objectAssign( newState, action.dialog, { open: true } );
   case CLOSE_DIALOG:
     return {
       title: '',
@@ -24,8 +26,12 @@ export default function dialog( state = initialState, action ) {
       open: false
     };
   default:
+    // By default, return the original, uncloned state.
+    // This makes sure that autorehydrate doesn't drop out.
     return state;
   }
+  // Catch any cases that decide to mutate without returning.
+  return newState;
 }
 
 export function setDialog( dialog ) {
