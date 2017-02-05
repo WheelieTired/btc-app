@@ -81,7 +81,7 @@ export class SettingsPage extends Component {
       account = (
         <List>
           <ListItem disabled
-            primaryText='Logged in as:'
+            primaryText='Logged in as'
             secondaryText={ email } />
         </List>
       );
