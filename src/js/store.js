@@ -9,17 +9,19 @@ import filters from './reducers/filter';
 import account from './reducers/account';
 import drawer from './reducers/btc-drawer';
 
+import { fromJS } from 'immutable';
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
+import { persistStore, autoRehydrate, createTransform } from 'redux-persist'
 import thunk from 'redux-thunk';
 
 const devTools = typeof window === 'object' && typeof window.devToolsExtension !== 'undefined' ? window.devToolsExtension() : f => f;
 
-const args = [ applyMiddleware( thunk ) ];
+const args = [ autoRehydrate(), applyMiddleware( thunk )];
 if ( process.env.NODE_ENV === 'development' ) {
   args.push( devTools );
 }
 
-export default compose.apply( null, args )( createStore )( combineReducers( {
+const theStore = compose.apply( null, args )( createStore )( combineReducers( {
   notifications,
   points,
   tracks,
@@ -29,3 +31,49 @@ export default compose.apply( null, args )( createStore )( combineReducers( {
   filters,
   account,
 drawer } ) );
+
+// Convert the immutable data to normal JS with the immutable library.
+function serializeMakeMutable(inboundState, key) {
+	return inboundState.toJS();
+}
+
+// Convert the normal JS to immatable data with the immutable library.
+function deserializeMakeImmutable(outboundState, key) {
+	return(fromJS(outboundState));
+}
+
+// The tracks reducer wraps its state in the immutable library's imutableness.
+// We need to add these extra steps on serialize and deserialize.
+let immutableTransformer = createTransform(
+  (inboundState, key) => serializeMakeMutable(inboundState, key),
+  (outboundState, key) => deserializeMakeImmutable(outboundState, key),
+  {whitelist: ['tracks']}
+);
+
+/*
+// Just print the key and state as it is serialized for debugging.
+function serializePrint(inboundState, key) {
+  console.log("Serializing " + key + ":");
+  console.log(inboundState);
+  return inboundState;
+}
+
+// Just print the key and state as it is deserialized for debugging.
+function deserializePrint(outboundState, key) {
+  console.log("Deserializing " + key + ":");
+  console.log(outboundState);
+  return outboundState;
+}
+
+// Just print the key and state as it is (de)serialized for debugging.
+let debugPrintTransformer = createTransform(
+  (inboundState, key) => serializePrint(inboundState, key),
+  (outboundState, key) => deserializePrint(outboundState, key),
+  // Whitelist which reducers you want to print.
+  {whitelist: ['points']}
+);
+*/
+
+persistStore(theStore, {transforms: [immutableTransformer/*, debugPrintTransformer*/]});
+
+export default theStore;

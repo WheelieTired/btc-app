@@ -9,11 +9,13 @@ import { SettingSwitch } from '../components/setting-switch';
 
 import Refresh from 'material-ui/svg-icons/navigation/refresh';
 import Delete from 'material-ui/svg-icons/action/delete';
+import DeleteForever from 'material-ui/svg-icons/action/delete-forever';
 /*eslint-enable no-unused-vars*/
 
 import noop from 'lodash/noop';
 
 import { resetPoints, replicatePoints } from '../reducers/points';
+import { resetDatabaseAndLocalStorageAndRefresh } from '../database';
 import { setOnlineMode } from '../reducers/settings';
 import { connect } from 'react-redux';
 
@@ -32,12 +34,12 @@ export class SettingsPage extends Component {
       subtext: 'Don\'t connect to the internet',
       toggled: !settings.onlineMode,
       onToggle: offline => setOnlineMode( !settings.onlineMode )
-    }, {
+    }/*, {
       text: 'Download on mobile',
       subtext: 'Use 3G or 4G data',
       toggled: false,
       onToggle: noop
-    } ].map( item => {
+    }*/ ].map( item => {
       const tog = (
       <Toggle toggled={ item.toggled }
         onToggle={ item.onToggle } />
@@ -50,29 +52,37 @@ export class SettingsPage extends Component {
         );
     } );
 
-    const date = 'Last updated: ' + new Date().toLocaleDateString();
+    var options = { year: '2-digit', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
+    const date = 'Last: ' + new Date(this.props.lastReplicatedTimestamp).toLocaleDateString(navigator.language, options);
     const lastUpdated = (
-    <ListItem primaryText='Update now'
+    <ListItem primaryText='Update points now'
       onTouchTap={ replicatePoints }
       secondaryText={ date }
       leftIcon={ <Refresh /> } />
     );
 
     const clearPoints = (
-    <ListItem primaryText='Delete cache'
+    <ListItem primaryText='Clear point cache'
       onTouchTap={ resetPoints }
-      secondaryText='80 MB'
+      secondaryText='Including unpublished'
       leftIcon={ <Delete /> } />
+    );
+
+    const resetApp = (
+    <ListItem primaryText='Reset app'
+      onTouchTap={ resetDatabaseAndLocalStorageAndRefresh }
+      secondaryText='Clear all data and restart'
+      leftIcon={ <DeleteForever /> } />
     );
 
     const {loggedIn, email} = this.props.login;
     let account;
     if ( loggedIn ) {
       account = (
-        <List subheader='Your account'>
+        <List>
           <ListItem disabled
-            primaryText={ email }
-            secondaryText='email' />
+            primaryText='Logged in as'
+            secondaryText={ email } />
         </List>
       );
     }
@@ -81,13 +91,14 @@ export class SettingsPage extends Component {
     return (
       <Page className="section__layout">
         <Block style={ { padding: 0 } }>
-          <List subheader='Network'>
+          <List>
             { toggleItems }
           </List>
           <Divider />
-          <List subheader='Services and Alerts'>
+          <List>
             { lastUpdated }
             { clearPoints }
+            { resetApp }
           </List>
           <Divider />
           { account }
@@ -101,7 +112,8 @@ export class SettingsPage extends Component {
 function mapStateToProps( state ) {
   return {
     settings: state.settings,
-    login: state.account.login
+    login: state.account.login,
+    lastReplicatedTimestamp: state.points.replication.time,
   };
 }
 

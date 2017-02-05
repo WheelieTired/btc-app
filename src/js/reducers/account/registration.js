@@ -1,4 +1,4 @@
-import assign from 'lodash/assign';
+import { assign, cloneDeep } from 'lodash';
 
 import { User } from 'btc-models';
 import { request } from '../../util/server';
@@ -15,27 +15,32 @@ const initState = {
 };
 
 export default function reducer( state = initState, action ) {
+  let newState = cloneDeep(state);
   switch ( action.type ) {
   case REQUEST_REGISTRATION:
-    return assign( {}, state, {
+    return assign( {}, newState, {
       fetching: true
     } );
   case RECEIVE_REGISTRATION:
-    return assign( {}, state, {
+    return assign( {}, newState, {
       fetching: false,
       received: true,
       validation: [],
       error: action.error || null
     } );
   case FAILED_REG_VALIDATION:
-    return assign( {}, state, {
+    return assign( {}, newState, {
       fetching: false,
       received: false,
       validation: action.error || []
     } );
   default:
+    // By default, return the original, uncloned state.
+    // This makes sure that autorehydrate doesn't drop out.
     return state;
   }
+  // Catch any cases that decide to mutate without returning.
+  return newState;
 }
 
 // This action validates User attributes then sends a registration request

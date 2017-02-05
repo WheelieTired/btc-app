@@ -19,8 +19,7 @@ export const REQUEST_REPLICATION = 'btc-app/points/REQUEST_REPLICATION';
 export const RECEIVE_REPLICATION = 'btc-app/points/RECEIVE_REPLICATION';
 export const REQUEST_PUBLISH = 'btc-app/points/REQUEST_PUBLISH';
 export const RECEIVE_PUBLISH = 'btc-app/points/RECEIVE_PUBLISH';
-
-const UPDATED_POINTS_LOCALSTORAGE_KEY = 'UPDATED_POINTS_LOCALSTORAGE_KEY'
+export const CLEAR_CACHED_POINTS = 'btc-app/points/CLEAR_CACHED_POINTS';
 
 // # Points Reducer
 // The points reducer holds the points, their comments, and relevant metadata
@@ -40,54 +39,71 @@ const initState = {
 };
 
 export default function reducer( state = initState, action ) {
-  state = cloneDeep( state );
+  let newState = cloneDeep( state );
   const idPath = 'points.' + action.id;
   switch ( action.type ) {
   case UPDATE_SERVICE:
   case ADD_SERVICE:
   case ADD_ALERT:
     // Make sure the point isn't already in our updated list.
-    if(state.publish.updated.indexOf(action.id) < 0) {
-      state.publish.updated.push(action.id);
+    if(newState.publish.updated.indexOf(action.id) < 0) {
+      let updatedPoints = cloneDeep( newState.publish.updated );
+      updatedPoints.push(action.id);
+      set( newState, 'publish.updated', updatedPoints );
     }
-    
-    localStorage.setItem(UPDATED_POINTS_LOCALSTORAGE_KEY, JSON.stringify(state.publish.updated));
-    set( state, idPath, action.point );
+    set( newState, idPath, action.point );
     break;
   case RESCIND_POINT:
-    unset( state, idPath );
+    // Make sure the point is in our updated list.
+    let updatedPoints = cloneDeep( newState.publish.updated );
+    let idIndex = updatedPoints.indexOf(action.id);
+    if(idIndex >= 0) {
+      // Remove the point from our updated list.
+      updatedPoints.splice(idIndex, 1);
+      // Update the updated list.
+      set( newState, 'publish.updated', updatedPoints );
+      // Unset the point (it should be readded to the state with reloadPoints).
+      unset( newState, idPath );
+    } else {
+      console.warn("Trying to remove a point that wasn't added.");
+    }
     break;
   case RELOAD_POINTS:
-    var updatedPointString = localStorage.getItem(UPDATED_POINTS_LOCALSTORAGE_KEY);
-    if (updatedPointString != null) {
-      state.publish.updated = JSON.parse(updatedPointString);
-    }
-    set( state, 'points', action.points );
+    set( newState, 'points', action.points );
     break;
   case REQUEST_LOAD_POINT:
-    set( state, idPath, { isFetching: true } );
+    set( newState, idPath, { isFetching: true } );
     break;
   case RECEIVE_LOAD_POINT:
-    set( state, idPath, { isFetching: false, ...action.point } );
+    set( newState, idPath, { isFetching: false, ...action.point } );
     break;
   case REQUEST_REPLICATION:
-    set( state, 'replication', { time: action.time, inProgress: true } );
+    set( newState, 'replication', { time: action.time, inProgress: true } );
     break;
   case RECEIVE_REPLICATION:
-    set( state, 'replication', { time: action.time, inProgress: false } );
+    set( newState, 'replication', { time: action.time, inProgress: false } );
     break;
   case REQUEST_PUBLISH:
-    set( state, 'publish.inProgress', true );
+    set( newState, 'publish.inProgress', true );
     break;
   case RECEIVE_PUBLISH:
-    set( state, 'publish.inProgress', false );
+    set( newState, 'publish.inProgress', false );
     if ( action.err == null ) {
-      state.publish.updated = [];
-      localStorage.setItem(UPDATED_POINTS_LOCALSTORAGE_KEY, JSON.stringify(state.publish.updated));
+      set( newState, 'publish.updated', [] );
     }
     break;
+  case CLEAR_CACHED_POINTS:
+  	// Clear the state's version of the points.
+  	set( newState, 'points', {} );
+ 	// This only clears the list of unpublished points, not the points themselves.
+  	set( newState, 'publish.updated', [] );
+    break;
+  default:
+    // By default, return the original, uncloned state.
+    // This makes sure that autorehydrate doesn't drop out.
+    return state;
   }
-  return state;
+  return newState;
 }
 
 // # Generic Add & Update Logic
@@ -147,7 +163,10 @@ export const updateService = factory( UPDATE_SERVICE );
 // Allows the user to delete points that haven't yet been synced to another
 // database. After a point is synced the first time, it cannot be deleted
 export function rescindPoint( id ) {
-  return { type: RESCIND_POINT, id };
+  return dispatch => {
+    dispatch({ type: RESCIND_POINT, id });
+    dispatch(reloadPoints());
+  };
 }
 
 // # Reload Points
@@ -165,10 +184,14 @@ export function reloadPoints() {
   };
 }
 
+export function clearCachedPoints() {
+  	return { type: CLEAR_CACHED_POINTS };
+}
+
 // # Reset Points
 // Reset the points database then reload the (empty) database.
 export function resetPoints() {
-  return dispatch => reset().then( ( ) => dispatch( reloadPoints() ) );
+  	return dispatch => reset().then( ( ) => dispatch( clearCachedPoints() ) ).then( ( ) => dispatch( replicatePoints() ) ).then( ( ) => dispatch( setSnackbar( { message: 'Cleared point cache and reloaded points' } ) ) );
 }
 
 // # Load Point
