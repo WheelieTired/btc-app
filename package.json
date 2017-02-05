@@ -13,7 +13,7 @@
     "format:replace": "esformatter -i \"?(src|test)/js/**/*.js\"",
     "lint": "eslint \"?(src|test)/js/**/*.js\"",
     "livereload": "livereload \"platforms/browser/www/\"",
-    "postbuild": "cp -r src/index.html src/img www/",
+    "postbuild": "cp -r src/index.html src/img src/fonts www/",
     "postdebug:android": "cp \"./platforms/android/build/outputs/apk/android-debug.apk\" \"./bicycle-touring-companion-debug.apk\"",
     "postinstall": "cordova prepare",
     "postrelease:android": "cp \"./platforms/android/build/outputs/apk/android-release-unsigned.apk\" \"./bicycle-touring-companion.apk\"",
