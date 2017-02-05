@@ -54,7 +54,19 @@ export default function reducer( state = initState, action ) {
     set( newState, idPath, action.point );
     break;
   case RESCIND_POINT:
-    unset( newState, idPath );
+    // Make sure the point is in our updated list.
+    let updatedPoints = cloneDeep( newState.publish.updated );
+    let idIndex = updatedPoints.indexOf(action.id);
+    if(idIndex >= 0) {
+      // Remove the point from our updated list.
+      updatedPoints.splice(idIndex, 1);
+      // Update the updated list.
+      set( newState, 'publish.updated', updatedPoints );
+      // Unset the point (it should be readded to the state with reloadPoints).
+      unset( newState, idPath );
+    } else {
+      console.warn("Trying to remove a point that wasn't added.");
+    }
     break;
   case RELOAD_POINTS:
     set( newState, 'points', action.points );
@@ -151,7 +163,10 @@ export const updateService = factory( UPDATE_SERVICE );
 // Allows the user to delete points that haven't yet been synced to another
 // database. After a point is synced the first time, it cannot be deleted
 export function rescindPoint( id ) {
-  return { type: RESCIND_POINT, id };
+  return dispatch => {
+    dispatch({ type: RESCIND_POINT, id });
+    dispatch(reloadPoints());
+  };
 }
 
 // # Reload Points
