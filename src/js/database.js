@@ -21,6 +21,10 @@ export function reset() {
   );
 }
 
+export function resetDatabaseAndLocalStorageAndRefresh() {
+	return reset().then(( ) => localStorage.clear()).then(( ) => location.reload());
+}
+
 const {protocol, domain, port} = config.get( 'Client.couch' );
 const url = `${ protocol }://${ domain }:${ port }/points`;
 export const remote = new PouchDB( url );

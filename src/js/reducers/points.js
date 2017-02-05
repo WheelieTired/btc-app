@@ -19,6 +19,7 @@ export const REQUEST_REPLICATION = 'btc-app/points/REQUEST_REPLICATION';
 export const RECEIVE_REPLICATION = 'btc-app/points/RECEIVE_REPLICATION';
 export const REQUEST_PUBLISH = 'btc-app/points/REQUEST_PUBLISH';
 export const RECEIVE_PUBLISH = 'btc-app/points/RECEIVE_PUBLISH';
+export const CLEAR_CACHED_POINTS = 'btc-app/points/CLEAR_CACHED_POINTS';
 
 // # Points Reducer
 // The points reducer holds the points, their comments, and relevant metadata
@@ -78,6 +79,12 @@ export default function reducer( state = initState, action ) {
     if ( action.err == null ) {
       set( newState, 'publish.updated', [] );
     }
+    break;
+  case CLEAR_CACHED_POINTS:
+  	// Clear the state's version of the points.
+  	set( newState, 'points', {} );
+ 	// This only clears the list of unpublished points, not the points themselves.
+  	set( newState, 'publish.updated', [] );
     break;
   default:
     // By default, return the original, uncloned state.
@@ -162,10 +169,14 @@ export function reloadPoints() {
   };
 }
 
+export function clearCachedPoints() {
+  	return { type: CLEAR_CACHED_POINTS };
+}
+
 // # Reset Points
 // Reset the points database then reload the (empty) database.
 export function resetPoints() {
-  return dispatch => reset().then( ( ) => dispatch( reloadPoints() ) );
+  	return dispatch => reset().then( ( ) => dispatch( clearCachedPoints() ) ).then( ( ) => dispatch( replicatePoints() ) ).then( ( ) => dispatch( setSnackbar( { message: 'Cleared point cache and reloaded points' } ) ) );
 }
 
 // # Load Point
