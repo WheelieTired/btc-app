@@ -179,7 +179,23 @@ export function reloadPoints() {
     points.fetch().then( res => {
       return points.getCovers();
     } ).then( res => {
-      dispatch( { type: RELOAD_POINTS, points: points.store() } );
+
+      //copy all points into new variable
+      let allPoints = points.store();
+
+      //copy only visible points into this new variable.
+      var visiblePoints = {};
+
+      //getting all keys of all points. 
+      let allKeys = Object.keys(allPoints);
+
+      //loop over all keys and copy each key value if it is visible
+      allKeys.forEach(function(key){ 
+        if(allPoints[key].is_hidden == false ){
+          visiblePoints[key] = allPoints[key];
+        }
+      });
+      dispatch( { type: RELOAD_POINTS, points: visiblePoints} );
     } );
   };
 }
