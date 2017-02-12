@@ -28,6 +28,7 @@ import FilterPage from './containers/filter-page';
 import SettingsPage from './containers/settings-page';
 import PublishPage from './containers/publish-page';
 import AboutPage from './containers/about-page';
+import OnboardingPage from './containers/onboarding'
 
 import AddServicePage from './containers/wizard/add-service-page';
 import UpdateServicePage from './containers/wizard/update-service-page';
@@ -103,6 +104,8 @@ document.addEventListener( 'deviceReady', ( ) => {
               component={ SettingsPage } />
             <Route path="about"
               component={ AboutPage } />
+            <Route path="onboarding"
+              component={ OnboardingPage } />
             <Route path="publish"
               component={ PublishPage } />
             <Route path="login"

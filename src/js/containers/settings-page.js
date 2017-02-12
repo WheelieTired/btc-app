@@ -10,10 +10,13 @@ import { SettingSwitch } from '../components/setting-switch';
 import Refresh from 'material-ui/svg-icons/navigation/refresh';
 import Delete from 'material-ui/svg-icons/action/delete';
 import DeleteForever from 'material-ui/svg-icons/action/delete-forever';
+import Help from 'material-ui/svg-icons/action/help';
+
 /*eslint-enable no-unused-vars*/
 
 import noop from 'lodash/noop';
 
+import history from '../history';
 import { resetPoints, replicatePoints } from '../reducers/points';
 import { resetDatabaseAndLocalStorageAndRefresh } from '../database';
 import { setOnlineMode } from '../reducers/settings';
@@ -24,6 +27,10 @@ import { setDrawer } from '../reducers/btc-drawer';
 export class SettingsPage extends Component {
   componentDidMount() {
     this.props.setDrawer( 'Settings' );
+  }
+
+  launchPanels() {
+    history.push( `/onboarding`);
   }
 
   render() {
@@ -75,6 +82,13 @@ export class SettingsPage extends Component {
       leftIcon={ <DeleteForever /> } />
     );
 
+    const onboarding = (
+    <ListItem primaryText='Launch help panels'
+      onTouchTap={ this.launchPanels }
+      secondaryText=''
+      leftIcon={ <Help /> } />
+    );
+
     const {loggedIn, email} = this.props.login;
     let account;
     if ( loggedIn ) {
@@ -99,6 +113,7 @@ export class SettingsPage extends Component {
             { lastUpdated }
             { clearPoints }
             { resetApp }
+            { onboarding }
           </List>
           <Divider />
           { account }
