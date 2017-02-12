@@ -10,6 +10,8 @@ import { connect } from 'react-redux';
 
 import { setDrawer } from '../reducers/btc-drawer';
 
+import '../../css/onboarding.css';
+
 export class OnboardingPage extends Component {
   constructor(props) {
       super(props);
@@ -36,22 +38,21 @@ export class OnboardingPage extends Component {
   render() {
     var image = 'img/onboarding'+ this.state.activePage + '.png';
     return (
-      <div style={{height:'100%'}}>
-        <img src={image} style={{zIndex:'1200', boxSizing:'border-box', outline:'solid 75px rgb(0, 188, 212)'}} />
-        <p style={{
-          zIndex:'1300', display: 'flex', alignItems:'center', justifyContent:'center',
-          position:'fixed', bottom:'125px', backgroundColor:'rgb(0, 188, 212)', color:'white', textAlign:'center'
-        }}>
-        {this.state.text}
-        </p>
-        <div style={{zIndex:'1300', display: 'flex', alignItems:'center', justifyContent:'center', position:'fixed', bottom:'75px'}}>
-          <Pagination
-            activePage={this.state.activePage}
-            itemsCountPerPage={1}
-            totalItemsCount={this.totalItems}
-            pageRangeDisplayed={5}
-            onChange={this.handlePageChange.bind(this)}
-          />
+      <div id="container">
+        <img id="panelImage" src={image} />
+        <div id="panelBottom">
+          <div id="panelText">
+            {this.state.text}
+          </div>
+          <div>
+            <Pagination
+              activePage={this.state.activePage}
+              itemsCountPerPage={1}
+              totalItemsCount={this.totalItems}
+              pageRangeDisplayed={5}
+              onChange={this.handlePageChange.bind(this)}
+            />
+          </div>
         </div>
       </div>
     );
