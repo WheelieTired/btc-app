@@ -4,9 +4,11 @@ import { Paper, Dialog, FlatButton, Snackbar } from 'material-ui';
 import bowser from 'bowser';
 import { connect } from 'react-redux';
 
+import history from '../history';
 import BtcDrawer from '../containers/btc-drawer';
 import Notifications from '../containers/notifications';
 import { setSnackbar } from '../reducers/notifications/snackbar';
+import { setShownOnboarding } from '../reducers/settings';
 /*eslint-enable no-unused-vars*/
 
 import '../../css/layout.css';
@@ -23,6 +25,12 @@ import '../../css/layout.css';
 // in relation to component updates.
 export class App extends Component {
   render() {
+    const {setShownOnboarding, settings} = this.props;
+    if (!settings.shownOnboarding) {
+      setShownOnboarding(true);
+      history.push( `/onboarding`);
+    }
+
     const page = React.Children.only( this.props.children );
     const unsupportedMessage = 'Your browser version is not supported.';
     const delayTime = 500;
@@ -84,10 +92,12 @@ export class App extends Component {
   }
 }
 
-function select( state ) {
+function mapStateToProps( state ) {
   return {
-
+    settings: state.settings
   };
 }
 
-export default connect( select )( App );
+const actions = { setShownOnboarding };
+
+export default connect( mapStateToProps, actions )( App );
