@@ -5,13 +5,13 @@ import sd from 'skin-deep';
 
 import React from 'react';
 import ReactDom from 'react-dom';
-import { Drawer } from '../../../src/js/containers/btc-drawer';
+import { BtcDrawer } from '../../../src/js/containers/btc-drawer';
 /*eslint-enable no-unused-vars*/
 
 describe( '<Drawer />', function() {
   it( 'should be closed by default', function() {
     const tree = sd.shallowRender( (
-      <Drawer drawer="New Page"
+      <BtcDrawer drawer="New Page"
         login={ { loggedIn: false } } />
       ) );
 
@@ -21,7 +21,7 @@ describe( '<Drawer />', function() {
   } );
   it( 'should set the title from the drawer prop', function() {
     const tree = sd.shallowRender( (
-      <Drawer drawer="New Page"
+      <BtcDrawer drawer="New Page"
         login={ { loggedIn: false } } />
       ) );
 
