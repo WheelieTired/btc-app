@@ -146,12 +146,12 @@ const factory = type => {
       }
 
       if ( coverBlob ) {
-        point.setCover( coverBlob );
-        promise.then(
-          ( ) => point.attach( coverBlob, 'cover.png', 'image/png' )
-        );
+        point.setCover(coverBlob);
+        return dispatch => promise.then(() => point.attach(coverBlob, 'cover.png', 'image/png').then(() => dispatch({ type, id: point.id, point: point.store() })));
       }
-      return { type, id: point.id, point: point.store() };
+      else {
+        return dispatch => promise.then(() => dispatch({ type, id: point.id, point: point.store() }));
+      }
     }
   };
 };
