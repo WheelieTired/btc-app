@@ -39,7 +39,15 @@ export class WizardPage extends Component {
   // # getPageValues
   // Pick the values for fields in `getPageFields()` for serialization;
   getPageValues() {
-    return assign( {}, pick( this.state, this.getPageFields() ) );
+    const object = assign( {}, pick( this.state, this.getPageFields() ) );
+    for (var property in object) {
+      if (object.hasOwnProperty(property)) {
+        if (object[property] === "") {
+          object[property] = undefined;
+        }
+      }
+    }
+    return object;
   }
 
   // # getPageContent
