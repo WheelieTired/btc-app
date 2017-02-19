@@ -191,7 +191,9 @@ export function reloadPoints() {
 
       //loop over all keys and copy each key value if it is visible
       allKeys.forEach(function(key){ 
-        if(allPoints[key].is_hidden == false ){
+        /* ( If key is not hidden ) AND ( No Expiration Field OR Expiration is Greater than Now ) 
+         * Then display the point.*/
+        if(allPoints[key].is_hidden == false && (allPoints[key].expiration_date == null || new Date(allPoints[key].expiration_date) > new Date() )){
           visiblePoints[key] = allPoints[key];
         }
       });
