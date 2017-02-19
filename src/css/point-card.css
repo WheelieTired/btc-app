@@ -186,6 +186,9 @@
 .point-card__contact > * {
     margin-right: 15px;
 }
+.point-card__expires-on {
+    color: red;
+}
 
 /*
  * The rest of the card's content. It is a columnar flexbox. This is the

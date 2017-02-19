@@ -1,6 +1,6 @@
 /*eslint-disable no-unused-vars*/
 import React from 'react';
-import { TextField, RaisedButton, FlatButton, SelectField, MenuItem } from 'material-ui';
+import { TextField, RaisedButton, FlatButton, SelectField, MenuItem, DatePicker } from 'material-ui';
 /*eslint-enable no-unused-vars*/
 
 import WizardPage from './wizard-page';
@@ -15,6 +15,7 @@ export class AlertNameDescription extends WizardPage {
       name: point.name,
       type: point.type,
       location: point.location,
+      expiration_date: point.expiration_date,
       description: point.description,
       coverUrl: point.coverUrl
     } );
@@ -25,7 +26,7 @@ export class AlertNameDescription extends WizardPage {
   }
 
   getPageFields() {
-    return [ 'name', 'type', 'description', 'coverBlob' ];
+    return [ 'name', 'type', 'description', 'expiration_date', 'coverBlob' ];
   }
 
   getPageContent() {
@@ -54,6 +55,10 @@ export class AlertNameDescription extends WizardPage {
     if ( !validationErrors ) {
       validationErrors = {};
     }
+    //create new date variable
+    var tomorrow = new Date();
+    //add 1 day to the date Object to set the minDate to be tomorrow and not today.
+    tomorrow.setDate(tomorrow.getDate() + 1);
 
     return (
       <div className="wizard-page">
@@ -80,6 +85,13 @@ export class AlertNameDescription extends WizardPage {
           rows={ 2 }
           rowsMax={ 4 }
           errorText={ validationErrors[ 'description' ] ? validationErrors[ 'description' ].message : '' } />
+          <DatePicker fullWidth
+          { ...this.link( 'expiration_date' ) }
+          minDate = { tomorrow }
+          floatingLabelText="Expires"
+          autoOk = {true}
+          firstDayOfWeek ={0}
+          errorText={ validationErrors[ 'expiration_date' ] ? validationErrors[ 'expiration_date' ].message : '' } />
         { image }
       </div>
       );

@@ -97,6 +97,20 @@ export class PointCard extends Component {
       return 'Hours not available'
     }
   }
+/* This method gets the expiration date and displays the date if there is one.
+ * Else it will display "no expiration date added."
+ */
+static expiresOn( alert ) {
+    var ex_date = new Date(alert.expiration_date);
+    var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'};
+    if (alert.expiration_date != null) {
+      // Get that expiration date and display that expiration date
+      return 'Expires On: ' + ex_date.toLocaleDateString(navigator.language, options);
+  //else return no exipration date added
+  }else{
+    return 'No expiration date added ' 
+  }
+}
 
   // Get an english list of available amenities
   static amenities( service ) {

@@ -28,6 +28,8 @@ export class ViewPointCard extends PointCard {
         <div className="point-card__content">
           <CardText>
             { point.description }
+            <br/>
+            <span className="point-card__expires-on">{`${PointCard.expiresOn( point )}`}</span>
           </CardText>
         </div>
       );
