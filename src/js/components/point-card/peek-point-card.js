@@ -34,11 +34,17 @@ export class PeekPointCard extends PointCard {
         <span className="point-card__open-until">{ `${PointCard.openUntil( point )} ${timezone} — ` }</span>
       );
     }
-
+    let expiresOn;
+    if( type === 'alert'){
+      expiresOn = (<span className="point-card__expires-on">{`${PointCard.expiresOn( point )}`}</span>
+      );
+    }
     return (
       <CardText className="point-card__description">
         { openUntil }
         <span>{ point.description }</span>
+        <br/>
+        { expiresOn } 
       </CardText>
       );
   }

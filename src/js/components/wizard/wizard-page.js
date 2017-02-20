@@ -47,7 +47,16 @@ export class WizardPage extends Component {
         }
       }
     }
-    return object;
+    let keyValues = object;
+
+    /* for each key if the key is an instanceof date the key value is now converted into a string */
+    Object.keys(keyValues).forEach(function(key) {
+      if(keyValues[key] instanceof Date) {
+        keyValues[key] = keyValues[key].toISOString();
+      }
+    });
+
+    return keyValues;
   }
 
   // # getPageContent
