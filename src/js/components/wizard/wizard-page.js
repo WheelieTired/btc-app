@@ -39,7 +39,15 @@ export class WizardPage extends Component {
   // # getPageValues
   // Pick the values for fields in `getPageFields()` for serialization;
   getPageValues() {
-    let keyValues = assign( {}, pick( this.state, this.getPageFields() ) );
+    const object = assign( {}, pick( this.state, this.getPageFields() ) );
+    for (var property in object) {
+      if (object.hasOwnProperty(property)) {
+        if (object[property] === "") {
+          object[property] = undefined;
+        }
+      }
+    }
+    let keyValues = object;
 
     /* for each key if the key is an instanceof date the key value is now converted into a string */
     Object.keys(keyValues).forEach(function(key) {
