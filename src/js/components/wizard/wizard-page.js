@@ -5,7 +5,7 @@ import { RaisedButton, FlatButton } from 'material-ui';
 /*eslint-enable no-unused-vars*/
 
 import Device, { PhotoEncodingMethods } from '../../util/device';
-import { imgSrcToBlob, createObjectURL, base64StringToBlob } from 'blob-util';
+import { imgSrcToBlob, createObjectURL, base64StringToBlob, dataURLToBlob } from 'blob-util';
 
 import '../../../css/wizard.css';
 
@@ -165,6 +165,7 @@ export class WizardPage extends Component {
       );
   }
 
+
   // There is a bug in capturing a photo from the browser:
   // [CB-9852](https://issues.apache.org/jira/browse/CB-9852)
   onPhotoAdd() {
@@ -183,9 +184,48 @@ export class WizardPage extends Component {
         promise = null;
       }
       if ( promise ) {
-        promise.then( coverBlob => {
-          const coverUrl = createObjectURL( coverBlob );
-          this.setState( { coverBlob, coverUrl } );
+        promise.then( theBlob => {
+          let loadedCoverBlob = document.createElement('img');
+          loadedCoverBlob.src = URL.createObjectURL(theBlob);
+          // We need to reference this inside the onload function
+          loadedCoverBlob.wizardPage = this;
+
+          // Need to wait for loadedCoverBlob to load and then keep working
+          loadedCoverBlob.onload = function() {
+            //Shrink the theBlob which was photo but now is a blob
+            let MAX_WIDTH = 800;
+            let MAX_HEIGHT = 600;
+
+            var newWidth = loadedCoverBlob.width;
+            var newHeight = loadedCoverBlob.height;
+
+            if (newWidth > newHeight) {
+                if (newWidth > MAX_WIDTH) {
+                   newHeight *= MAX_WIDTH / newWidth;
+                   newWidth = MAX_WIDTH;
+                }
+            } else {
+                if (newHeight > MAX_HEIGHT) {
+                   newWidth *= MAX_HEIGHT / newHeight;
+                   newHeight = MAX_HEIGHT;
+                }
+            }
+
+            let canvas = document.createElement('canvas');
+            canvas.width = newWidth;
+            canvas.height = newHeight;
+
+            let context = canvas.getContext('2d');
+            context.drawImage(loadedCoverBlob, 0, 0, newWidth, newHeight);
+            let resizedDataUrl = canvas.toDataURL('image/png');
+
+            let resizedCoverBlob = dataURLToBlob(resizedDataUrl);
+
+            resizedCoverBlob.then(coverBlob => {
+              let coverUrl = createObjectURL(coverBlob);
+              this.wizardPage.setState( { coverBlob, coverUrl } );
+            });
+          };
         } );
       }
     }, err => {
