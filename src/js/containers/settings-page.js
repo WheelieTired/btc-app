@@ -11,6 +11,7 @@ import Refresh from 'material-ui/svg-icons/navigation/refresh';
 import Delete from 'material-ui/svg-icons/action/delete';
 import DeleteForever from 'material-ui/svg-icons/action/delete-forever';
 import Help from 'material-ui/svg-icons/action/help';
+import AccountCircle from 'material-ui/svg-icons/action/account-circle';
 
 /*eslint-enable no-unused-vars*/
 
@@ -96,7 +97,8 @@ export class SettingsPage extends Component {
         <List>
           <ListItem disabled
             primaryText='Logged in as'
-            secondaryText={ email } />
+            secondaryText={ email }
+            leftIcon={ <AccountCircle /> } />
         </List>
       );
     }
