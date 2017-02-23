@@ -281,7 +281,7 @@ export function replicatePoints() {
     const time = new Date().toISOString();
     dispatch( { type: REQUEST_REPLICATION, time } );
 
-    local.replicate.from( remote ).then( result => {
+    local.replicate.from( remote, { retry: true } ).then( result => {
       dispatch( { type: RECEIVE_REPLICATION, time: result.end_time } );
       dispatch( reloadPoints() );
     } ).catch( err => {
