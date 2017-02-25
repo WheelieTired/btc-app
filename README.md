@@ -49,5 +49,6 @@ _Look at the `package.json` for other commands!_
   - Modifying the `config.xml` changes the cordova/android settings
     - There is an svg for the alpha and normal logo in `/src/img` folder. Using a command line tool like [imagemagick](http://www.imagemagick.org/) or a vector graphics editing tool like [Inkscape](https://inkscape.org/) should allow you to modify or export it into multiple sizes.
 - Testing
+  - 'npm run test' to execute test runner
   - For javascript unit testing, we are using the [Mocha](https://mochajs.org/) stack, with [Chai](http://chaijs.com/) and [Sinon](http://sinonjs.org/). We run client-side tests using the Karma test runner, which runs the tests inside a browser instance.
   - [Skin-deep](https://github.com/glenjamin/skin-deep) is a testing framework to mock the react components used in the client, and test the state, props, and rendered component. We forked the official glenjamin/skin-deep repository in an attempt to resolve project specific issues. We would recommend to future teams to attempt to use the newest version of skin-deep, or more mature testing frameworks, such as Airbnb’s React testing framework, [Enzyme](https://github.com/airbnb/enzyme).
