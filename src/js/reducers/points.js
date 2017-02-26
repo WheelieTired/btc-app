@@ -1,5 +1,6 @@
 /*global XMLHttpRequest FormData*/
 import { baseUrl } from '../util/server';
+import { photoBaseUrl } from '../database';
 import { Agent, observeStore } from '../util/agent';
 
 import { local, remote, reset } from '../database';
@@ -59,8 +60,9 @@ export default function reducer( state = initState, action ) {
     set( newState, idPath, action.point );
 
     if( action.photo ) {
-      // TODO: Clear the photo url when this is set.
       set( newState, 'unpublishedCoverPhotos.' + action.id, action.photo );
+      // Clear the URL to make sure we get the new (local) photo next time
+      unset( newState, 'coverPhotoUrls.' + action.id );
     }
     break;
   case RESCIND_POINT:
@@ -74,6 +76,9 @@ export default function reducer( state = initState, action ) {
       set( newState, 'publish.updated', updatedPoints );
       // Unset the point (it should be readded to the state with reloadPoints).
       unset( newState, idPath );
+      // Clear any photo for it
+      unset( newState, 'unpublishedCoverPhotos.' + action.id );
+      unset( newState, 'coverPhotoUrls.' + action.id );
     } else {
       console.warn("Trying to remove a point that wasn't added.");
     }
@@ -92,6 +97,8 @@ export default function reducer( state = initState, action ) {
     break;
   case RECEIVE_REPLICATION:
     set( newState, 'replication', { time: action.time, inProgress: false } );
+    // Clear the photo URLs; they will be regenerated next time they are needed.
+    set( newState, 'coverPhotoUrls', {} );
     break;
   case REQUEST_PUBLISH:
     set( newState, 'publish.inProgress', true );
@@ -100,6 +107,7 @@ export default function reducer( state = initState, action ) {
     set( newState, 'publish.inProgress', false );
     if ( action.err == null ) {
       set( newState, 'publish.updated', [] );
+      set( newState, 'unpublishedCoverPhotos', {} );
     }
     break;
   case CLEAR_CACHED_POINTS:
@@ -107,6 +115,10 @@ export default function reducer( state = initState, action ) {
     set( newState, 'points', {} );
     // This only clears the list of unpublished points, not the points themselves.
     set( newState, 'publish.updated', [] );
+    // Clear any unpublished photos.
+    set( newState, 'unpublishedCoverPhotos', {} );
+    // Clear the photo URLs; they will be regenerated next time they are needed.
+    set( newState, 'coverPhotoUrls', {} );
 break;
   case SET_URL_FOR_POINTID:
     set( newState, 'coverPhotoUrls.' + action.pointId, action.url );
@@ -296,10 +308,22 @@ export function getCoverPhotoURLForPointId( pointId ) {
             dispatch( { type: SET_URL_FOR_POINTID, pointId: pointId, url: theUrl} );
           });
         });
+      } else {
+        let testRemoteURL = photoBaseUrl + "/" + encodeURIComponent(pointId) + "/photo.png";
+
+        const request = new XMLHttpRequest();
+        request.open( 'HEAD', testRemoteURL );
+        request.onload = event => {
+          if (request.status != 404) {
+            dispatch( { type: SET_URL_FOR_POINTID, pointId: pointId, url: testRemoteURL} );
+          } else {
+            console.log("The above 404 is normal. We're just checking if there is a remote photo for this point.")
+          }
+        };
+        request.send();
       }
     }
   };
-  // TODO: Check if there is a remote image and return it here.
 }
 
 // # Replicate Points
