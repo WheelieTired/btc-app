@@ -59,7 +59,15 @@ import store from './store';
 import { NetworkStateAgent } from './reducers/network';
 import { ReplicationAgent, reloadPoints } from './reducers/points';
 
-// Fix tap events so material-ui components work
+// Eat all the touchstarts so that we look like a desktop web browser
+// even on mobile and we avoid all this 750ms react-tap-event-plugin
+// nonsense (see the bottom of its readme).
+document.addEventListener("touchstart", function(event) {
+    event.preventDefault();
+}, false);
+
+// We still need react-tap-event-plugin to translate our click events
+// into touch events to keep material-ui happy.
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
