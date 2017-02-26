@@ -201,9 +201,9 @@ static expiresOn( alert ) {
     }
 
     let coverPhotoUrl = this.props.coverPhotoUrls[this.point._id];
-    let coverUrlStyle = {};
+    let coverPhotoStyle = {};
     if ( coverPhotoUrl ) {
-      coverUrlStyle.backgroundImage = `url(${coverPhotoUrl})`;
+      coverPhotoStyle.backgroundImage = `url(${coverPhotoUrl})`;
     }
 
     return (
@@ -216,7 +216,7 @@ static expiresOn( alert ) {
         </CardHeader>
         <div className="point-card__scroll">
           <CardMedia className="point-card__media"
-            style={ coverUrlStyle } />
+            style={ coverPhotoStyle } />
           { this.getCardContent() }
         </div>
         <CardActions className="point-card__actions">
