@@ -309,7 +309,7 @@ export function getCoverPhotoURLForPointId( pointId ) {
           });
         });
       } else {
-        let testRemoteURL = photoBaseUrl + "/" + encodeURIComponent(pointId) + "/photo.png";
+        let testRemoteURL = photoBaseUrl + "/" + encodeURIComponent(pointId) + "/coverPhoto.jpg";
 
         const request = new XMLHttpRequest();
         request.open( 'HEAD', testRemoteURL );
@@ -458,7 +458,7 @@ function buildFormData( models, unpublishedCoverPhotos ) {
 
   var convertAndAppend = function(cover){
     return base64StringToBlob(cover).then((coverPhotoBlob) => {
-      formData.append( 'covers', coverPhotoBlob, 'cover.png' );
+      formData.append( 'covers', coverPhotoBlob, 'coverPhoto.jpg' );
     });
   };
 
