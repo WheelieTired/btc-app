@@ -5,7 +5,7 @@ import { Agent, observeStore } from '../util/agent';
 import { local, remote, reset } from '../database';
 import { setSnackbar } from './notifications/snackbar';
 
-import { Point, Service, Alert, Comment, PointCollection } from 'btc-models';
+import { Point, Service, Alert, PointCollection } from 'btc-models';
 import { set, unset, bindAll, cloneDeep } from 'lodash';
 
 import { blobToBase64String, base64StringToBlob } from 'blob-util';
@@ -290,7 +290,7 @@ export function getCoverPhotoURLForPointId( pointId ) {
 
     if(state.points.coverPhotoUrls[pointId] == null) {
       if(state.points.unpublishedCoverPhotos[pointId]) {
-        return Promise.resolve().then( ( ) => { 
+        return Promise.resolve().then( ( ) => {
           base64StringToBlob(state.points.unpublishedCoverPhotos[pointId]).then((coverPhotoBlob) => { 
             let theUrl = URL.createObjectURL(coverPhotoBlob);
             dispatch( { type: SET_URL_FOR_POINTID, pointId: pointId, url: theUrl} );
@@ -378,7 +378,7 @@ export function publishPoints() {
     } );
 
     return publish.fetch().then( res => {
-      return buildFormData( publish.models );
+      return buildFormData( publish.models, points.unpublishedCoverPhotos );
     } ).then( formData => {
       return new Promise( ( resolve, reject ) => {
         const request = new XMLHttpRequest();
@@ -411,18 +411,18 @@ export function publishPoints() {
   };
 }
 
-function buildFormData( models ) {
+function buildFormData( models, unpublishedCoverPhotos ) {
   const serialized = [];
   const covers = [];
 
   models.filter(
-    model => [ Service, Alert, Comment ].some( ctr => model instanceof ctr )
+    model => [ Service, Alert ].some( ctr => model instanceof ctr )
   ).forEach(
     model => {
       const json = model.toJSON();
-      if ( model.coverBlob ) {
+      if ( unpublishedCoverPhotos[model._id] ) {
         json.index = covers.length;
-        covers.push( model.coverBlob );
+        covers.push( unpublishedCoverPhotos[model._id] );
       }
       serialized.push( json );
     }
