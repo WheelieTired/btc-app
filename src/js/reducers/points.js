@@ -420,9 +420,9 @@ function buildFormData( models, unpublishedCoverPhotos ) {
   ).forEach(
     model => {
       const json = model.toJSON();
-      if ( unpublishedCoverPhotos[model._id] ) {
+      if ( unpublishedCoverPhotos[model.id] ) {
         json.index = covers.length;
-        covers.push( unpublishedCoverPhotos[model._id] );
+        covers.push( unpublishedCoverPhotos[model.id] );
       }
       serialized.push( json );
     }
@@ -431,9 +431,16 @@ function buildFormData( models, unpublishedCoverPhotos ) {
 
   const formData = new FormData();
   formData.append( 'models', stringified );
-  covers.forEach( cover => {
-    formData.append( 'covers', cover, 'cover.png' );
-  } );
 
-  return formData;
+  var convertAndAppend = function(cover){
+    return base64StringToBlob(cover).then((coverPhotoBlob) => {
+      formData.append( 'covers', coverPhotoBlob, 'cover.png' );
+    });
+  };
+
+  let coverPhotoBlobs = covers.map(convertAndAppend);
+
+  return Promise.all(coverPhotoBlobs).then(() => {
+    return formData;
+  });
 }
