@@ -230,8 +230,7 @@ export class WizardPage extends Component {
             let resizedCoverBlob = dataURLToBlob(resizedDataUrl);
 
             resizedCoverBlob.then(coverBlob => {
-              let coverUrl = createObjectURL(coverBlob);
-              this.wizardPage.setState( { coverBlob, coverUrl } );
+              this.wizardPage.setState( { coverBlob } );
             });
           };
         } );

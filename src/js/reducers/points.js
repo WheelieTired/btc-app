@@ -8,6 +8,8 @@ import { setSnackbar } from './notifications/snackbar';
 import { Point, Service, Alert, Comment, PointCollection } from 'btc-models';
 import { set, unset, bindAll, cloneDeep } from 'lodash';
 
+import { blobToBase64String, base64StringToBlob } from 'blob-util';
+
 export const ADD_SERVICE = 'btc-app/points/ADD_SERVICE';
 export const ADD_ALERT = 'btc-app/points/ADD_ALERT';
 export const UPDATE_SERVICE = 'btc-app/points/UPDATE_SERVICE';
@@ -20,6 +22,7 @@ export const RECEIVE_REPLICATION = 'btc-app/points/RECEIVE_REPLICATION';
 export const REQUEST_PUBLISH = 'btc-app/points/REQUEST_PUBLISH';
 export const RECEIVE_PUBLISH = 'btc-app/points/RECEIVE_PUBLISH';
 export const CLEAR_CACHED_POINTS = 'btc-app/points/CLEAR_CACHED_POINTS';
+export const SET_URL_FOR_POINTID = 'btc-app/points/SET_URL_FOR_POINTID';
 
 // # Points Reducer
 // The points reducer holds the points, their comments, and relevant metadata
@@ -28,6 +31,8 @@ export const CLEAR_CACHED_POINTS = 'btc-app/points/CLEAR_CACHED_POINTS';
 // while the database fetch is running.
 const initState = {
   points: {},
+  unpublishedCoverPhotos: {},
+  coverPhotoUrls: {},
   replication: {
     inProgress: false,
     time: null
@@ -52,6 +57,11 @@ export default function reducer( state = initState, action ) {
       set( newState, 'publish.updated', updatedPoints );
     }
     set( newState, idPath, action.point );
+
+    if( action.photo ) {
+      // TODO: Clear the photo url when this is set.
+      set( newState, 'unpublishedCoverPhotos.' + action.id, action.photo );
+    }
     break;
   case RESCIND_POINT:
     // Make sure the point is in our updated list.
@@ -93,10 +103,13 @@ export default function reducer( state = initState, action ) {
     }
     break;
   case CLEAR_CACHED_POINTS:
-  	// Clear the state's version of the points.
-  	set( newState, 'points', {} );
- 	// This only clears the list of unpublished points, not the points themselves.
-  	set( newState, 'publish.updated', [] );
+    // Clear the state's version of the points.
+    set( newState, 'points', {} );
+    // This only clears the list of unpublished points, not the points themselves.
+    set( newState, 'publish.updated', [] );
+break;
+  case SET_URL_FOR_POINTID:
+    set( newState, 'coverPhotoUrls.' + action.pointId, action.url );
     break;
   default:
     // By default, return the original, uncloned state.
@@ -137,8 +150,6 @@ const factory = type => {
 
       let promise;
       if ( type === UPDATE_SERVICE ) {
-        point.set( 'updated', true );
-
         const attributes = cloneDeep( point.attributes );
         promise = point.fetch().then( res => point.save( attributes ) );
       } else {
@@ -146,8 +157,7 @@ const factory = type => {
       }
 
       if ( coverBlob ) {
-        point.setCover(coverBlob);
-        return dispatch => promise.then(() => point.attach(coverBlob, 'cover.png', 'image/png').then(() => dispatch({ type, id: point.id, point: point.store() })));
+        return dispatch => promise.then(() => { return blobToBase64String(coverBlob); }).then((base64Blob) => dispatch({ type, id: point.id, point: point.store(), photo: base64Blob }));
       }
       else {
         return dispatch => promise.then(() => dispatch({ type, id: point.id, point: point.store() }));
@@ -177,8 +187,6 @@ export function reloadPoints() {
   const points = new PointCollection();
   return dispatch => {
     points.fetch().then( res => {
-      return points.getCovers();
-    } ).then( res => {
 
       //copy all points into new variable
       let allPoints = points.store();
@@ -274,6 +282,26 @@ export function flagPoint( id, reason ) {
     }; 
 }
 
+// Returns either the local (non-published) cover image URL or
+// the URL to the remote image if one exists.
+export function getCoverPhotoURLForPointId( pointId ) {
+  return ( dispatch, getState ) => {
+    let state = getState();
+
+    if(state.points.coverPhotoUrls[pointId] == null) {
+      if(state.points.unpublishedCoverPhotos[pointId]) {
+        return Promise.resolve().then( ( ) => { 
+          base64StringToBlob(state.points.unpublishedCoverPhotos[pointId]).then((coverPhotoBlob) => { 
+            let theUrl = URL.createObjectURL(coverPhotoBlob);
+            dispatch( { type: SET_URL_FOR_POINTID, pointId: pointId, url: theUrl} );
+          });
+        });
+      }
+    }
+  };
+  // TODO: Check if there is a remote image and return it here.
+}
+
 // # Replicate Points
 // Start a replication job from the remote points database.
 export function replicatePoints() {
@@ -350,8 +378,6 @@ export function publishPoints() {
     } );
 
     return publish.fetch().then( res => {
-      return publish.getCovers();
-    } ).then( res => {
       return buildFormData( publish.models );
     } ).then( formData => {
       return new Promise( ( resolve, reject ) => {
@@ -372,6 +398,7 @@ export function publishPoints() {
       } );
     } ).then( res => {
       dispatch( { type: RECEIVE_PUBLISH } );
+      replicatePoints();
       dispatch( setSnackbar( { message: 'Published points of interest' } ) );
     } ).catch( err => {
       dispatch( { type: RECEIVE_PUBLISH, err } );

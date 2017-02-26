@@ -6,6 +6,13 @@ import { List, ListItem, IconButton, FontIcon, Divider, Avatar } from 'material-
 import { display } from 'btc-models';
 
 export class PointList extends Component {
+  componentDidMount() {
+    Object.keys(state.points.points).forEach(function(pointId) {
+      // Load all the photos in if they are not yet loaded.
+      getCoverPhotoURLForPointId(pointId);
+    });
+  }
+
   render() {
     const points = this.props.points.map( point => {
       const listProps = {};
@@ -21,8 +28,8 @@ export class PointList extends Component {
         );
       }
 
-      if ( point.coverUrl ) {
-        listProps.leftAvatar = <Avatar src={ point.coverUrl } />;
+      if ( this.props.coverPhotoUrls[point._id] ) {
+        listProps.leftAvatar = <Avatar src={ this.props.coverPhotoUrls[point._id] } />;
       }
 
       return (
