@@ -11,6 +11,8 @@ import { set, unset, bindAll, cloneDeep } from 'lodash';
 
 import { blobToBase64String, base64StringToBlob } from 'blob-util';
 
+import {REHYDRATE} from 'redux-persist/constants'
+
 export const ADD_SERVICE = 'btc-app/points/ADD_SERVICE';
 export const ADD_ALERT = 'btc-app/points/ADD_ALERT';
 export const UPDATE_SERVICE = 'btc-app/points/UPDATE_SERVICE';
@@ -48,6 +50,14 @@ export default function reducer( state = initState, action ) {
   let newState = cloneDeep( state );
   const idPath = 'points.' + action.id;
   switch ( action.type ) {
+  case REHYDRATE:
+  	var incoming = action.payload.points;
+  	if(incoming) {
+		// Clear the photo URLs; local ones are transient and only valid for the current page load;
+		// they will be regenerated next time they are needed.
+		newState = {...newState, ...incoming, coverPhotoUrls: {}}
+  	}
+  	break;
   case UPDATE_SERVICE:
   case ADD_SERVICE:
   case ADD_ALERT:
@@ -119,7 +129,7 @@ export default function reducer( state = initState, action ) {
     set( newState, 'unpublishedCoverPhotos', {} );
     // Clear the photo URLs; they will be regenerated next time they are needed.
     set( newState, 'coverPhotoUrls', {} );
-break;
+    break;
   case SET_URL_FOR_POINTID:
     set( newState, 'coverPhotoUrls.' + action.pointId, action.url );
     break;
