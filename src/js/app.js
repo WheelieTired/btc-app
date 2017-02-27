@@ -59,10 +59,25 @@ import store from './store';
 import { NetworkStateAgent } from './reducers/network';
 import { ReplicationAgent, reloadPoints } from './reducers/points';
 
-// Eat all the touchstarts so that we look like a desktop web browser
+// Eat all the touches so that we look like a desktop web browser
 // even on mobile and we avoid all this 750ms react-tap-event-plugin
 // nonsense (see the bottom of its readme).
 document.addEventListener("touchstart", function(event) {
+    event.preventDefault();
+}, false);
+document.addEventListener("touchmove", function(event) {
+    event.preventDefault();
+}, false);
+document.addEventListener("touchend", function(event) {
+    event.preventDefault();
+}, false);
+document.addEventListener("touchenter", function(event) {
+    event.preventDefault();
+}, false);
+document.addEventListener("touchleave", function(event) {
+    event.preventDefault();
+}, false);
+document.addEventListener("touchcancel", function(event) {
     event.preventDefault();
 }, false);
 
