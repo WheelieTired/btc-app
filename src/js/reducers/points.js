@@ -1,12 +1,17 @@
 /*global XMLHttpRequest FormData*/
 import { baseUrl } from '../util/server';
+import { photoBaseUrl } from '../database';
 import { Agent, observeStore } from '../util/agent';
 
 import { local, remote, reset } from '../database';
 import { setSnackbar } from './notifications/snackbar';
 
-import { Point, Service, Alert, Comment, PointCollection } from 'btc-models';
+import { Point, Service, Alert, PointCollection } from 'btc-models';
 import { set, unset, bindAll, cloneDeep } from 'lodash';
+
+import { blobToBase64String, base64StringToBlob } from 'blob-util';
+
+import {REHYDRATE} from 'redux-persist/constants'
 
 export const ADD_SERVICE = 'btc-app/points/ADD_SERVICE';
 export const ADD_ALERT = 'btc-app/points/ADD_ALERT';
@@ -20,6 +25,7 @@ export const RECEIVE_REPLICATION = 'btc-app/points/RECEIVE_REPLICATION';
 export const REQUEST_PUBLISH = 'btc-app/points/REQUEST_PUBLISH';
 export const RECEIVE_PUBLISH = 'btc-app/points/RECEIVE_PUBLISH';
 export const CLEAR_CACHED_POINTS = 'btc-app/points/CLEAR_CACHED_POINTS';
+export const SET_URL_FOR_POINTID = 'btc-app/points/SET_URL_FOR_POINTID';
 
 // # Points Reducer
 // The points reducer holds the points, their comments, and relevant metadata
@@ -28,6 +34,8 @@ export const CLEAR_CACHED_POINTS = 'btc-app/points/CLEAR_CACHED_POINTS';
 // while the database fetch is running.
 const initState = {
   points: {},
+  unpublishedCoverPhotos: {},
+  coverPhotoUrls: {},
   replication: {
     inProgress: false,
     time: null
@@ -42,6 +50,14 @@ export default function reducer( state = initState, action ) {
   let newState = cloneDeep( state );
   const idPath = 'points.' + action.id;
   switch ( action.type ) {
+  case REHYDRATE:
+  	var incoming = action.payload.points;
+  	if(incoming) {
+		// Clear the photo URLs; local ones are transient and only valid for the current page load;
+		// they will be regenerated next time they are needed.
+		newState = {...newState, ...incoming, coverPhotoUrls: {}}
+  	}
+  	break;
   case UPDATE_SERVICE:
   case ADD_SERVICE:
   case ADD_ALERT:
@@ -52,6 +68,12 @@ export default function reducer( state = initState, action ) {
       set( newState, 'publish.updated', updatedPoints );
     }
     set( newState, idPath, action.point );
+
+    if( action.photo ) {
+      set( newState, 'unpublishedCoverPhotos.' + action.id, action.photo );
+      // Clear the URL to make sure we get the new (local) photo next time
+      unset( newState, 'coverPhotoUrls.' + action.id );
+    }
     break;
   case RESCIND_POINT:
     // Make sure the point is in our updated list.
@@ -64,6 +86,9 @@ export default function reducer( state = initState, action ) {
       set( newState, 'publish.updated', updatedPoints );
       // Unset the point (it should be readded to the state with reloadPoints).
       unset( newState, idPath );
+      // Clear any photo for it
+      unset( newState, 'unpublishedCoverPhotos.' + action.id );
+      unset( newState, 'coverPhotoUrls.' + action.id );
     } else {
       console.warn("Trying to remove a point that wasn't added.");
     }
@@ -82,6 +107,8 @@ export default function reducer( state = initState, action ) {
     break;
   case RECEIVE_REPLICATION:
     set( newState, 'replication', { time: action.time, inProgress: false } );
+    // Clear the photo URLs; they will be regenerated next time they are needed.
+    set( newState, 'coverPhotoUrls', {} );
     break;
   case REQUEST_PUBLISH:
     set( newState, 'publish.inProgress', true );
@@ -90,13 +117,21 @@ export default function reducer( state = initState, action ) {
     set( newState, 'publish.inProgress', false );
     if ( action.err == null ) {
       set( newState, 'publish.updated', [] );
+      set( newState, 'unpublishedCoverPhotos', {} );
     }
     break;
   case CLEAR_CACHED_POINTS:
-  	// Clear the state's version of the points.
-  	set( newState, 'points', {} );
- 	// This only clears the list of unpublished points, not the points themselves.
-  	set( newState, 'publish.updated', [] );
+    // Clear the state's version of the points.
+    set( newState, 'points', {} );
+    // This only clears the list of unpublished points, not the points themselves.
+    set( newState, 'publish.updated', [] );
+    // Clear any unpublished photos.
+    set( newState, 'unpublishedCoverPhotos', {} );
+    // Clear the photo URLs; they will be regenerated next time they are needed.
+    set( newState, 'coverPhotoUrls', {} );
+    break;
+  case SET_URL_FOR_POINTID:
+    set( newState, 'coverPhotoUrls.' + action.pointId, action.url );
     break;
   default:
     // By default, return the original, uncloned state.
@@ -137,8 +172,6 @@ const factory = type => {
 
       let promise;
       if ( type === UPDATE_SERVICE ) {
-        point.set( 'updated', true );
-
         const attributes = cloneDeep( point.attributes );
         promise = point.fetch().then( res => point.save( attributes ) );
       } else {
@@ -146,8 +179,7 @@ const factory = type => {
       }
 
       if ( coverBlob ) {
-        point.setCover(coverBlob);
-        return dispatch => promise.then(() => point.attach(coverBlob, 'cover.png', 'image/png').then(() => dispatch({ type, id: point.id, point: point.store() })));
+        return dispatch => promise.then(() => { return blobToBase64String(coverBlob); }).then((base64Blob) => dispatch({ type, id: point.id, point: point.store(), photo: base64Blob }));
       }
       else {
         return dispatch => promise.then(() => dispatch({ type, id: point.id, point: point.store() }));
@@ -177,8 +209,6 @@ export function reloadPoints() {
   const points = new PointCollection();
   return dispatch => {
     points.fetch().then( res => {
-      return points.getCovers();
-    } ).then( res => {
 
       //copy all points into new variable
       let allPoints = points.store();
@@ -274,6 +304,38 @@ export function flagPoint( id, reason ) {
     }; 
 }
 
+// Returns either the local (non-published) cover image URL or
+// the URL to the remote image if one exists.
+export function getCoverPhotoURLForPointId( pointId ) {
+  return ( dispatch, getState ) => {
+    let state = getState();
+
+    if(state.points.coverPhotoUrls[pointId] == null) {
+      if(state.points.unpublishedCoverPhotos[pointId]) {
+        return Promise.resolve().then( ( ) => {
+          base64StringToBlob(state.points.unpublishedCoverPhotos[pointId]).then((coverPhotoBlob) => { 
+            let theUrl = URL.createObjectURL(coverPhotoBlob);
+            dispatch( { type: SET_URL_FOR_POINTID, pointId: pointId, url: theUrl} );
+          });
+        });
+      } else {
+        let testRemoteURL = photoBaseUrl + "/" + encodeURIComponent(pointId) + "/coverPhoto.jpg";
+
+        const request = new XMLHttpRequest();
+        request.open( 'HEAD', testRemoteURL );
+        request.onload = event => {
+          if (request.status != 404) {
+            dispatch( { type: SET_URL_FOR_POINTID, pointId: pointId, url: testRemoteURL} );
+          } else {
+            console.log("The above 404 is normal. We're just checking if there is a remote photo for this point.")
+          }
+        };
+        request.send();
+      }
+    }
+  };
+}
+
 // # Replicate Points
 // Start a replication job from the remote points database.
 export function replicatePoints() {
@@ -350,9 +412,7 @@ export function publishPoints() {
     } );
 
     return publish.fetch().then( res => {
-      return publish.getCovers();
-    } ).then( res => {
-      return buildFormData( publish.models );
+      return buildFormData( publish.models, points.unpublishedCoverPhotos );
     } ).then( formData => {
       return new Promise( ( resolve, reject ) => {
         const request = new XMLHttpRequest();
@@ -372,6 +432,7 @@ export function publishPoints() {
       } );
     } ).then( res => {
       dispatch( { type: RECEIVE_PUBLISH } );
+      replicatePoints();
       dispatch( setSnackbar( { message: 'Published points of interest' } ) );
     } ).catch( err => {
       dispatch( { type: RECEIVE_PUBLISH, err } );
@@ -384,18 +445,18 @@ export function publishPoints() {
   };
 }
 
-function buildFormData( models ) {
+function buildFormData( models, unpublishedCoverPhotos ) {
   const serialized = [];
   const covers = [];
 
   models.filter(
-    model => [ Service, Alert, Comment ].some( ctr => model instanceof ctr )
+    model => [ Service, Alert ].some( ctr => model instanceof ctr )
   ).forEach(
     model => {
       const json = model.toJSON();
-      if ( model.coverBlob ) {
+      if ( unpublishedCoverPhotos[model.id] ) {
         json.index = covers.length;
-        covers.push( model.coverBlob );
+        covers.push( unpublishedCoverPhotos[model.id] );
       }
       serialized.push( json );
     }
@@ -404,9 +465,16 @@ function buildFormData( models ) {
 
   const formData = new FormData();
   formData.append( 'models', stringified );
-  covers.forEach( cover => {
-    formData.append( 'covers', cover, 'cover.png' );
-  } );
 
-  return formData;
+  var convertAndAppend = function(cover){
+    return base64StringToBlob(cover).then((coverPhotoBlob) => {
+      formData.append( 'covers', coverPhotoBlob, 'coverPhoto.jpg' );
+    });
+  };
+
+  let coverPhotoBlobs = covers.map(convertAndAppend);
+
+  return Promise.all(coverPhotoBlobs).then(() => {
+    return formData;
+  });
 }

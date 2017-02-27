@@ -65,6 +65,7 @@ class PublishPage extends Component {
         <Paper>
           <PointList instructions={ instructions }
             points={ this.props.points }
+            coverPhotoUrls={ this.props.coverPhotoUrls }
             /*buttonIcon='clear'
             buttonAction={ this.onPointRemove.bind( this ) }*/
             clickAction={ this.onPointClick.bind( this ) } />
@@ -83,7 +84,8 @@ class PublishPage extends Component {
 
 function mapStateToProps( state ) {
   return {
-    points: state.points.publish.updated.map( id => state.points.points[ id ] )
+    points: state.points.publish.updated.map( id => state.points.points[ id ] ),
+    coverPhotoUrls: state.points.coverPhotoUrls
   };
 }
 

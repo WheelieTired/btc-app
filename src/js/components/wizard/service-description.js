@@ -13,8 +13,7 @@ export class ServiceDescription extends WizardPage {
       description: point.description,
       phone: point.phone,
       address: point.address,
-      website: point.website,
-      coverUrl: point.coverUrl
+      website: point.website
     } );
   }
 
@@ -28,24 +27,11 @@ export class ServiceDescription extends WizardPage {
       'phone',
       'address',
       'website',
-      'coverBlob',
-      'coverUrl'
+      'coverBlob'
     ];
   }
 
   getPageContent() {
-    const {coverUrl} = this.state;
-
-    let image;
-    if ( coverUrl ) {
-      image = (
-        <div>
-          <image style={ { width: '100%' } }
-            src={ coverUrl } />
-        </div>
-      );
-    }
-
     let {validationErrors} = this.props;
     if ( !validationErrors ) {
       validationErrors = {};
@@ -74,7 +60,6 @@ export class ServiceDescription extends WizardPage {
           rows={ 2 }
           rowsMax={ 4 }
           errorText={ validationErrors[ 'description' ] ? validationErrors[ 'description' ].message : '' } />
-        { image }
       </div>
       );
   }
@@ -91,7 +76,7 @@ export class ServiceDescription extends WizardPage {
       return anySet || !isEmpty( this.state[ field ] );
     }, false );
 
-    if ( anySet ) {
+    if ( anySet || this.state.coverBlob ) {
       return WizardPage.transitions.next;
     } else {
       return WizardPage.transitions.skip;

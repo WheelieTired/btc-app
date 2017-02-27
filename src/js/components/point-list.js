@@ -3,9 +3,22 @@ import React, { Component, PropTypes } from 'react';
 import { List, ListItem, IconButton, FontIcon, Divider, Avatar } from 'material-ui';
 /*eslint-enable no-unused-vars*/
 
+import { getCoverPhotoURLForPointId } from '../reducers/points';
+
 import { display } from 'btc-models';
 
+import { connect } from 'react-redux';
+
 export class PointList extends Component {
+  componentWillReceiveProps(nextProps) {
+	if(nextProps.getCoverPhotoURLForPointId) {
+		nextProps.points.forEach(function(point) {
+		// Load all the photos in if they are not yet loaded.
+			nextProps.getCoverPhotoURLForPointId(point._id);
+		});
+	}
+  }
+
   render() {
     const points = this.props.points.map( point => {
       const listProps = {};
@@ -21,8 +34,8 @@ export class PointList extends Component {
         );
       }
 
-      if ( point.coverUrl ) {
-        listProps.leftAvatar = <Avatar src={ point.coverUrl } />;
+      if ( this.props.coverPhotoUrls[point._id] ) {
+        listProps.leftAvatar = <Avatar src={ this.props.coverPhotoUrls[point._id] } />;
       }
 
       return (
@@ -48,4 +61,11 @@ export class PointList extends Component {
   }
 }
 
-export default PointList;
+function mapStateToProps( state ) {
+  return {
+  };
+}
+
+const mapDispatchToProps = { getCoverPhotoURLForPointId };
+
+export default connect( mapStateToProps, mapDispatchToProps )( PointList );
