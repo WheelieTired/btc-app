@@ -58,7 +58,7 @@ export class AlertNameDescription extends WizardPage {
           fullWidth
           value={ latlng }
           floatingLabelText="Location"
-          errorText={ validationErrors[ 'name' ] ? validationErrors[ 'name' ].message : '' } />
+          errorText={ validationErrors[ 'location' ] ? validationErrors[ 'location' ].message : '' } />
         <SelectField fullWidth
           { ...this.link( 'type' ) }
           menuStyle={ { maxWidth: 500 } }
