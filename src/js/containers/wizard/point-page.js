@@ -231,7 +231,7 @@ export default class PointPage extends Component {
     }
 
     const {wizard} = this.refs;
-    if ( this.isPointValid() ) {
+    if ( this.isPointValid().valid ) {
       this.navAttempt = false;
       if ( wizard ) {
         wizard.persistBefore( onFinal );
