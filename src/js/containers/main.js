@@ -24,66 +24,63 @@ import '../../css/layout.css';
 // The main component is not connected. This ensures separation of concerns
 // in relation to component updates.
 export class App extends Component {
-  componentDidMount() {
-    const {setShownOnboarding, setSnackbar, settings} = this.props;
+  render() {
+    const {setShownOnboarding, settings} = this.props;
     if (!settings.shownOnboarding) {
       setShownOnboarding(true);
       history.push( `/onboarding`);
     }
 
+    const page = React.Children.only( this.props.children );
     const unsupportedMessage = 'Your browser version is not supported.';
     const delayTime = 500;
-    console.log("Browser: " + bowser.name + " Version: " + bowser.version);
-
+    const tempMessage = ("Name: " + bowser.name + " Version: " + bowser.version);
+    console.log(tempMessage);
     switch(bowser.name){
       case "Android":
         if (bowser.isUnsupportedBrowser({android: "4.4"}, window.navigator.userAgent)) {
-           setSnackbar( { message: unsupportedMessage }, delayTime );
+           this.props.dispatch( setSnackbar( { message: unsupportedMessage }, delayTime ) );
         }
         break;
       case "iOS":
         if (bowser.isUnsupportedBrowser({ios: "9.0"}, window.navigator.userAgent)) {
-           setSnackbar( { message: unsupportedMessage }, delayTime );
+           this.props.dispatch( setSnackbar( { message: unsupportedMessage }, delayTime ) );
         }
         break;
       case "Chrome":
         if (bowser.isUnsupportedBrowser({chrome: "49.0"}, window.navigator.userAgent)) {
-          setSnackbar( { message: unsupportedMessage }, delayTime );
+          this.props.dispatch( setSnackbar( { message: unsupportedMessage }, delayTime ) );
         }
         break;
       case "Firefox":
         if (bowser.isUnsupportedBrowser({firefox: "49.0"}, window.navigator.userAgent)) {
-           setSnackbar( { message: unsupportedMessage }, delayTime );
+           this.props.dispatch( setSnackbar( { message: unsupportedMessage }, delayTime ) );
         }
          break;
       case "IE":
         if (bowser.isUnsupportedBrowser({msie: "11.0"}, window.navigator.userAgent)) {
-           setSnackbar( { message: unsupportedMessage }, delayTime );
+           this.props.dispatch( setSnackbar( { message: unsupportedMessage }, delayTime ) );
         }
         break;
       case "Edge":
         if (bowser.isUnsupportedBrowser({edge: "13.0"}, window.navigator.userAgent)) {
-           setSnackbar( { message: unsupportedMessage }, delayTime );
+           this.props.dispatch( setSnackbar( { message: unsupportedMessage }, delayTime ) );
         }
         break;
       case "Safari":
         if (bowser.isUnsupportedBrowser({safari: "9.0"}, window.navigator.userAgent)) {
-           setSnackbar( { message: unsupportedMessage }, delayTime );
+           this.props.dispatch( setSnackbar( { message: unsupportedMessage }, delayTime ) );
         }
         break;
       case "Opera":
         if (bowser.isUnsupportedBrowser({opera: "40.0"}, window.navigator.userAgent)) {
-           setSnackbar( { message: unsupportedMessage }, delayTime );
+           this.props.dispatch( setSnackbar( { message: unsupportedMessage }, delayTime ) );
         }
         break;
       default:
-         setSnackbar( { message: 'We can not determine your browser version. This may affect some features.' }, delayTime );
+         this.props.dispatch( setSnackbar( { message: 'We can not determine your browser version. This may affect some features.' }, delayTime ) );
         break;
     }
-  }
-
-  render() {
-    const page = React.Children.only( this.props.children );
 
     return (
       <div className='layout'>
@@ -101,6 +98,6 @@ function mapStateToProps( state ) {
   };
 }
 
-const mapDispatchToProps = { setShownOnboarding, setSnackbar };
+const actions = { setShownOnboarding };
 
-export default connect( mapStateToProps, mapDispatchToProps )( App );
+export default connect( mapStateToProps, actions )( App );
