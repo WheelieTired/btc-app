@@ -7,6 +7,8 @@ import { FormBlock, errorProps } from '../components/block';
 import { connect } from 'react-redux';
 import bindAll from 'lodash/bindAll';
 
+import history from '../history';
+
 import { register } from '../reducers/account';
 import { setDrawer } from '../reducers/btc-drawer';
 
@@ -42,7 +44,7 @@ export class RegisterPage extends Component {
   //
   // If registration is successful, redirect the user to a "thank you" page
   onRegister( values ) {
-    const {dispatch, history} = this.props;
+    const {dispatch} = this.props;
     dispatch( register( values, ( ) => history.push( '/thanks' ) ) );
   }
 
