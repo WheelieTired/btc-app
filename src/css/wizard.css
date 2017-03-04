@@ -3,7 +3,7 @@
  * Raise the row of tabs above the map on any point page.
  */
 .tabs-bar {
-    z-index: 1000;
+    z-index: 1;
 }
 
 
@@ -45,7 +45,7 @@
 .tabs-content__action > div {
     flex-grow: 1;
     max-width: 500px;
-    z-index: 1000;
+    z-index: 2;
     padding: 10px;
     display: flex;
     flex-direction: row;

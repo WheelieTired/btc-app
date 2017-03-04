@@ -10,7 +10,7 @@ import RatingSelector from '../rating-selector';
 import { bindAll, cloneDeep } from 'lodash';
 import history from '../../history';
 
-import uuid from 'uuid';
+import uuid from 'node-uuid';
 import { Service } from 'btc-models';
 
 

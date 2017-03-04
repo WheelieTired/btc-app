@@ -20,7 +20,6 @@
     max-width: 500px;
     margin: auto;
     transition: all 300ms ease;
-    z-index: 1000 !important;
 }
 
 /*

@@ -7,8 +7,6 @@ import { FormBlock, errorProps } from '../components/block';
 import { connect } from 'react-redux';
 import bindAll from 'lodash/bindAll';
 
-import history from '../history';
-
 import { forgotPassword } from '../reducers/account';
 import { setDrawer } from '../reducers/btc-drawer';
 
@@ -32,7 +30,7 @@ export class ForgotPasswordPage extends Component {
   //
   // If password reset is successful, redirect the user to a "thank you" page
   onForgotPassword( values ) {
-    const {dispatch} = this.props;
+    const {dispatch, history} = this.props;
     dispatch( forgotPassword( values, ( ) => history.push( '/thanks-forgot-password' ) ) );
   }
 

@@ -7,8 +7,6 @@ import { FormBlock, errorProps } from '../components/block';
 import { connect } from 'react-redux';
 import bindAll from 'lodash/bindAll';
 
-import history from '../history';
-
 import { resetPassword } from '../reducers/account';
 import { setDrawer } from '../reducers/btc-drawer';
 
@@ -36,7 +34,7 @@ export class ResetPasswordPage extends Component {
   // If reset is successful, redirect the user to a "thank you" page
   onResetPassword( values ) {
     values["verification"] = encodeURIComponent( this.props.params.verification );
-    const {dispatch} = this.props;
+    const {dispatch, history} = this.props;
     dispatch( resetPassword( values, ( ) => history.push( '/thanks-reset-password' ) ) );
   }
 

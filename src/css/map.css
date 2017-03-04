@@ -18,10 +18,6 @@
     right: 0;
 }
 
-.mapButtons {
-    z-index: 1000;
-}
-
 /*
  * In browsing mode, we need to place the controls below the MUI header, which
  * is 60px tall. We add 4px to preserve the margins of the control area
@@ -46,7 +42,7 @@
  * div 50% from the left edge, minus half of the *marker's* width.
  */
 .crosshairs {
-    z-index: 1000;
+    z-index: 100;
     position: fixed;
     height: 41px;
     width: 41px;
@@ -84,6 +80,10 @@
     0% {top: 0px;}
     50% {top: -15px;}
     100% {top: 0px;}
+}
+
+.leaflet-control-container div {
+    z-index: 1;
 }
 
 .leaflet-control-attribution {

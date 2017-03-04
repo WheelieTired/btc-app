@@ -8,8 +8,6 @@ import { FormBlock, Block, BlockFooter, errorProps } from '../components/block';
 import { connect } from 'react-redux';
 import bindAll from 'lodash/bindAll';
 
-import history from '../history';
-
 import { login } from '../reducers/account';
 import { setDrawer } from '../reducers/btc-drawer';
 import { setSnackbar } from '../reducers/notifications';
@@ -45,7 +43,7 @@ export class LoginPage extends Component {
   // If login is successful, redirect the user to the map and display a
   // snackbar message.
   onLogin( values ) {
-    const {dispatch} = this.props;
+    const {dispatch, history} = this.props;
     dispatch( login( values, ( ) => {
       history.push( '/' );
       dispatch( setSnackbar( { message: 'You have logged in!' }, 500 ) );

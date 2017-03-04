@@ -231,16 +231,11 @@ export default class PointPage extends Component {
     }
 
     const {wizard} = this.refs;
-    if ( wizard ) {
-      wizard.persistBefore( ( ) => {
-        if ( this.isTabValid() ) {
-          this.navAttempt = false;
-          onFinal();
-        }
-      } );
-    } else {
-      if ( this.isPointValid().valid ) {
-        this.navAttempt = false;
+    if ( this.isPointValid().valid ) {
+      this.navAttempt = false;
+      if ( wizard ) {
+        wizard.persistBefore( onFinal );
+      } else {
         onFinal();
       }
     }
