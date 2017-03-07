@@ -28,3 +28,5 @@ export function resetDatabaseAndLocalStorageAndRefresh() {
 const {protocol, domain, port} = config.get( 'Client.couch' );
 const url = `${ protocol }://${ domain }:${ port }/points`;
 export const remote = new PouchDB( url );
+
+export const photoBaseUrl = `${ protocol }://${ domain }:${ port }/photos`;

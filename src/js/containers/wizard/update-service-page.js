@@ -65,8 +65,6 @@ export class UpdateServicePage extends PointPage {
   }
 
   // # onFinal
-  // Before calling `updateService`, transfer our original coverUrl to the
-  // new service in case we don't have a new one to attach.
   onFinal() {
     const {updateService, params} = this.props;
     const {point, coverBlob} = this.state;
@@ -75,7 +73,6 @@ export class UpdateServicePage extends PointPage {
     service.update();
     // Keep the previous ID. We can't be changing IDs when the name changes.
     service._id = params.id;
-    service.coverUrl = point.coverUrl;
     if ( service.isValid() ) {
       updateService( service, coverBlob );
       history.push( '/' );

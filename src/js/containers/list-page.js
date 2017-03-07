@@ -48,6 +48,7 @@ class ListPage extends Component {
             icon={ <FilterIcon /> }
             onTouchTap={ ( ) => history.push( 'filter' ) } />
           <PointList points={ this.props.points }
+            coverPhotoUrls={ this.props.coverPhotoUrls }
             clickAction={ this.onPointClick.bind( this ) } />
         </div>
       </Page>
@@ -57,7 +58,8 @@ class ListPage extends Component {
 
 function mapStateToProps( state ) {
   return {
-    points: values( state.points.points )
+    points: values( state.points.points ),
+    coverPhotoUrls: state.points.coverPhotoUrls
   };
 }
 

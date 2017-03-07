@@ -10,7 +10,7 @@ import RatingSelector from '../rating-selector';
 import { bindAll, cloneDeep } from 'lodash';
 import history from '../../history';
 
-import uuid from 'node-uuid';
+import uuid from 'uuid';
 import { Service } from 'btc-models';
 
 export class RatingPointCard extends PointCard {

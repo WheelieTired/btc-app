@@ -16,7 +16,7 @@ Have [npm](https://www.npmjs.com) installed on your development machine (availab
 
 ## iOS
 ### Running on iOS
-*Minimum iOS 8.0*  
+*Minimum iOS 9.0*  
 
 1. Install [Xcode](https://developer.apple.com/xcode/)
 2. Open platforms/iOS/BTC.xcodeproj  

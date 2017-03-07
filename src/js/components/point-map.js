@@ -2,8 +2,9 @@
 import React, { Component } from 'react';
 import { CircularProgress } from 'material-ui';
 
-import * as Leaflet from 'react-leaflet';
-const {Marker, Popup, Map, TileLayer, CircleMarker, MultiPolyline, setIconDefaultImagePath} = Leaflet;
+import Leaflet from 'leaflet';
+import * as ReactLeaflet from 'react-leaflet';
+const {Marker, Popup, Map, TileLayer, CircleMarker, MultiPolyline, Icon} = ReactLeaflet;
 
 import MBTilesLayer from './mbtiles-layer';
 /*eslint-enable no-unused-vars*/
@@ -13,8 +14,6 @@ import { Point } from 'btc-models';
 
 import '../../../node_modules/leaflet/dist/leaflet.css';
 import '../../css/map.css';
-
-setIconDefaultImagePath( 'img/icons' );
 
 export class PointMap extends Component {
   constructor( props ) {
@@ -30,6 +29,9 @@ export class PointMap extends Component {
 
   componentDidMount() {
     const {map, setGeoLocation, setMapCenter, setMapLoading, setMapZoom} = this.props;
+
+    Leaflet.Icon.Default.imagePath = "img/icons/";
+
     if ( map.loading ) {
       navigator.geolocation.getCurrentPosition(
         ( pos ) => {
@@ -178,9 +180,9 @@ export class PointMap extends Component {
         <Map className={ this.props.className || 'map' }
           center={ this.state.startCenter }
           zoom={ this.state.zoom }
-          onLeafletMove={ this.props.onLeafletMove }
-          onLeafletMoveEnd={ this.onMapMoved }
-          onclick={ this.props.addPoint ? noop : deselectMarker }>
+          onMove={ this.props.onLeafletMove }
+          onMoveend={ this.onMapMoved }
+          onClick={ this.props.addPoint ? noop : deselectMarker }>
           { circleMarker }
           { tileLayer }
           { markers }

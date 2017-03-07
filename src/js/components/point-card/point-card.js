@@ -58,18 +58,20 @@ export class PointCard extends Component {
   // method, but `loadPoint` synchronously puts some default data into
   // points[ params.id ] that we need *before* render.
   componentDidMount() {
-    const {params, points, loadPoint} = this.props;
+    const {params, points, loadPoint, getCoverPhotoURLForPointId} = this.props;
     loadPoint( params.id );
     this.point = points[ params.id ];
+    getCoverPhotoURLForPointId( params.id );
   }
 
   // # componentWillReceiveProps
   // See componentDidMount. As we are potentially getting a new id to display
   // from the router, we need to load the point for that id.
   componentWillReceiveProps( nextProps ) {
-    const {params, points, loadPoint} = nextProps;
+    const {params, points, loadPoint, getCoverPhotoURLForPointId} = nextProps;
     loadPoint( params.id );
     this.point = points[ params.id ];
+    getCoverPhotoURLForPointId( params.id );
   }
 
   // Return a function that navigates to a different page with the loaded
@@ -198,9 +200,10 @@ static expiresOn( alert ) {
         );
     }
 
-    let coverUrlStyle = {};
-    if ( point.coverUrl ) {
-      coverUrlStyle.backgroundImage = `url(${point.coverUrl})`;
+    let coverPhotoUrl = this.props.coverPhotoUrls[this.point._id];
+    let coverPhotoStyle = {};
+    if ( coverPhotoUrl ) {
+      coverPhotoStyle.backgroundImage = `url(${coverPhotoUrl})`;
     }
 
     return (
@@ -213,7 +216,7 @@ static expiresOn( alert ) {
         </CardHeader>
         <div className="point-card__scroll">
           <CardMedia className="point-card__media"
-            style={ coverUrlStyle } />
+            style={ coverPhotoStyle } />
           { this.getCardContent() }
         </div>
         <CardActions className="point-card__actions">

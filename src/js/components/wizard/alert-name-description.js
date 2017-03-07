@@ -16,8 +16,7 @@ export class AlertNameDescription extends WizardPage {
       type: point.type,
       location: point.location,
       expiration_date: point.expiration_date,
-      description: point.description,
-      coverUrl: point.coverUrl
+      description: point.description
     } );
   }
 
@@ -40,17 +39,6 @@ export class AlertNameDescription extends WizardPage {
         primaryText={ values.display } />
     ) );
 
-    const {coverUrl} = this.state;
-    let image;
-    if ( coverUrl ) {
-      image = (
-        <div>
-          <image style={ { width: '100%' } }
-            src={ coverUrl } />
-        </div>
-      );
-    }
-
     let {validationErrors} = this.props;
     if ( !validationErrors ) {
       validationErrors = {};
@@ -70,7 +58,7 @@ export class AlertNameDescription extends WizardPage {
           fullWidth
           value={ latlng }
           floatingLabelText="Location"
-          errorText={ validationErrors[ 'name' ] ? validationErrors[ 'name' ].message : '' } />
+          errorText={ validationErrors[ 'location' ] ? validationErrors[ 'location' ].message : '' } />
         <SelectField fullWidth
           { ...this.link( 'type' ) }
           menuStyle={ { maxWidth: 500 } }
@@ -92,7 +80,6 @@ export class AlertNameDescription extends WizardPage {
           autoOk = {true}
           firstDayOfWeek ={0}
           errorText={ validationErrors[ 'expiration_date' ] ? validationErrors[ 'expiration_date' ].message : '' } />
-        { image }
       </div>
       );
   }

@@ -74,6 +74,7 @@ let debugPrintTransformer = createTransform(
 );
 */
 
-persistStore(theStore, {transforms: [immutableTransformer/*, debugPrintTransformer*/]});
+// Don't persist the drawer state (basically the title on the nav bar).
+persistStore(theStore, {transforms: [immutableTransformer/*, debugPrintTransformer*/], blacklist: ['drawer']});
 
 export default theStore;

@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 
 import { setDrawer } from '../reducers/btc-drawer';
 import { loadPoint, flagPoint, updateService } from '../reducers/points';
+import { getCoverPhotoURLForPointId } from '../reducers/points';
 
 import history from '../history';
 
@@ -51,9 +52,9 @@ class MapPage extends Component {
   // This function will throw an error if there is more than one child.
   mapPropsOnCard() {
     if ( !this.props.children ) return;
-    const {points} = this.props;
+    const {points, coverPhotoUrls} = this.props;
 
-    const cardState = { points, heightOffset: 0 };
+    const cardState = { points, coverPhotoUrls, heightOffset: 0 };
     const cardFunctions = {
       deselectMarker: MapPage.deselectMarker,
       navigateWithId: MapPage.navigateWithId
@@ -95,7 +96,8 @@ class MapPage extends Component {
 
 function mapStateToProps( state ) {
   return {
-    points: state.points.points // PointCards are built for this marker
+    points: state.points.points, // PointCards are built for this marker
+    coverPhotoUrls: state.points.coverPhotoUrls
   };
 }
 
@@ -108,7 +110,8 @@ function mapDispatchToProps( dispatch ) {
     cardActions: bindActionCreators( {
       'loadPoint': loadPoint, // Cards load markers on componentDidMount,
       'flagPoint': flagPoint,
-      'updateService': updateService
+      'updateService': updateService,
+      'getCoverPhotoURLForPointId': getCoverPhotoURLForPointId
     }, dispatch ),
     pageActions: bindActionCreators( {
       'setDrawer': setDrawer

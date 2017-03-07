@@ -225,13 +225,12 @@ export class WizardPage extends Component {
 
             let context = canvas.getContext('2d');
             context.drawImage(loadedCoverBlob, 0, 0, newWidth, newHeight);
-            let resizedDataUrl = canvas.toDataURL('image/png');
+            let resizedDataUrl = canvas.toDataURL('image/jpg');
 
             let resizedCoverBlob = dataURLToBlob(resizedDataUrl);
 
             resizedCoverBlob.then(coverBlob => {
-              let coverUrl = createObjectURL(coverBlob);
-              this.wizardPage.setState( { coverBlob, coverUrl } );
+              this.wizardPage.setState( { coverBlob } );
             });
           };
         } );
@@ -241,7 +240,7 @@ export class WizardPage extends Component {
     }, {
       sourceType: navigator.camera.PictureSourceType.PHOTOLIBRARY,
       destinationType: navigator.camera.DestinationType.FILE_URI,
-      encodingType: navigator.camera.EncodingType.PNG
+      encodingType: navigator.camera.EncodingType.JPG
     } );
   }
 }
