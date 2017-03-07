@@ -186,12 +186,12 @@ export function reloadPoints() {
       //copy only visible points into this new variable.
       var visiblePoints = {};
 
-      //getting all keys of all points. 
+      //getting all keys of all points.
       let allKeys = Object.keys(allPoints);
 
       //loop over all keys and copy each key value if it is visible
-      allKeys.forEach(function(key){ 
-        /* ( If key is not hidden ) AND ( No Expiration Field OR Expiration is Greater than Now ) 
+      allKeys.forEach(function(key){
+        /* ( If key is not hidden ) AND ( No Expiration Field OR Expiration is Greater than Now )
          * Then display the point.*/
         if(allPoints[key].is_hidden == false && (allPoints[key].expiration_date == null || new Date(allPoints[key].expiration_date) > new Date() )){
           visiblePoints[key] = allPoints[key];
@@ -271,19 +271,21 @@ export function flagPoint( id, reason ) {
         }
       } );
 
-    }; 
+    };
 }
 
 // # Replicate Points
 // Start a replication job from the remote points database.
 export function replicatePoints() {
   return dispatch => {
+    console.log('replicating...');
     const time = new Date().toISOString();
     dispatch( { type: REQUEST_REPLICATION, time } );
 
     local.replicate.from( remote, { retry: true } ).then( result => {
       dispatch( { type: RECEIVE_REPLICATION, time: result.end_time } );
       dispatch( reloadPoints() );
+      console.log('reloading...');
     } ).catch( err => {
       dispatch( { type: RECEIVE_REPLICATION, time: err.end_time } );
       dispatch( setSnackbar( { message: 'Unable to get points of interest from server' } ) );

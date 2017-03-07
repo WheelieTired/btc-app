@@ -23,6 +23,7 @@ import ResetPasswordPage from './containers/reset-password-page';
 import ThanksPageForgotPassword from './containers/thanks-page-forgot-password';
 import ThanksPageResetPassword from './containers/thanks-page-reset-password';
 import ThanksPage from './containers/thanks-page';
+import LoadingPage from './containers/loading-page';
 import DownloadTrackPage from './containers/download-track-page';
 import FilterPage from './containers/filter-page';
 import SettingsPage from './containers/settings-page';
@@ -96,7 +97,7 @@ document.addEventListener( 'deviceReady', ( ) => {
               <Route path="rate-point/:id"
                 component={ RatingPointCard } />
               <Route path="flag-point/:id"
-                component={ FlagPointCard } />  
+                component={ FlagPointCard } />
             </Route>
             <Route path="list"
               component={ ListPage } />
@@ -124,6 +125,8 @@ document.addEventListener( 'deviceReady', ( ) => {
               component={ ThanksPageResetPassword } />
             <Route path="thanks"
               component={ ThanksPage } />
+            <Route path="/loading/:id"
+              component={ LoadingPage }/>
             <Route path="add-service"
               component={ AddServicePage }>
               <IndexRoute component={ PointLocation } />
