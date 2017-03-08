@@ -313,7 +313,7 @@ export function getCoverPhotoURLForPointId( pointId ) {
     if(state.points.coverPhotoUrls[pointId] == null) {
       if(state.points.unpublishedCoverPhotos[pointId]) {
         return Promise.resolve().then( ( ) => {
-          base64StringToBlob(state.points.unpublishedCoverPhotos[pointId]).then((coverPhotoBlob) => { 
+          base64StringToBlob(state.points.unpublishedCoverPhotos[pointId]).then((coverPhotoBlob) => {
             let theUrl = URL.createObjectURL(coverPhotoBlob);
             dispatch( { type: SET_URL_FOR_POINTID, pointId: pointId, url: theUrl} );
           });
@@ -340,13 +340,13 @@ export function getCoverPhotoURLForPointId( pointId ) {
 // Start a replication job from the remote points database.
 export function replicatePoints() {
   return dispatch => {
-    console.log('replicating...');
     const time = new Date().toISOString();
     dispatch( { type: REQUEST_REPLICATION, time } );
 
     return local.replicate.from( remote, { retry: true } ).then( result => {
       dispatch( { type: RECEIVE_REPLICATION, time: result.end_time } );
-    } ).then( result => reloadPoints()).catch( err => {
+    } ).then(( ) => dispatch( reloadPoints() ) )
+    .catch( err => {
       console.log(err);
       dispatch( { type: RECEIVE_REPLICATION, time: err.end_time } );
       dispatch( setSnackbar( { message: 'Unable to get points of interest from server' } ) );

@@ -12,16 +12,17 @@ import history from '../history';
 
 export class LoadingPage extends Component {
   componentDidMount() {
-    const {onlineMode} = this.props.settings;
-    if ( onlineMode ){
-	
+    const {isOnline} = this.props.network;
     let handler = (function(me){
-    	return function(){
-    		return history.push(`update-service/${ encodeURIComponent( me.props.params.id ) }`);
-    	}
+      return function(){
+        return history.push(`update-service/${ encodeURIComponent( me.props.params.id ) }`);
+      }
     }(this));
-      this.props.replicatePointsWithCallback(handler);
-    }
+      if ( isOnline ){
+        this.props.replicatePointsWithCallback(handler);
+      } else {
+        handler();
+      }
   }
 
   render() {
@@ -42,7 +43,7 @@ export class LoadingPage extends Component {
 
   static mapStateToProps( state ) {
     return {
-      settings: state.settings
+      network: state.network
     };
   }
 }
