@@ -241,17 +241,10 @@ export class WizardPage extends Component {
       // Some common settings are 20, 50, and 100
       quality: 50,
       destinationType: Camera.DestinationType.FILE_URI,
-
-      // In this app, dynamically set the picture source, Camera or photo gallery
-                                      
-      //then a dialog displays that allows users to select an existing image
-      sourceType: Camera.PictureSourceType.PHOTOLIBRARY, /* SAVEDPHOTOALBUM  both work*/
+      sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
       encodingType: Camera.EncodingType.JPG,
       mediaType: Camera.MediaType.PICTURE,
-      allowEdit: true,
       correctOrientation: true, //Corrects Android orientation quirks
-      //targetWidth: 512,
-      //targetHeight: 512,
       cameraDirection: Camera.Direction.BACK
     } );
   }
