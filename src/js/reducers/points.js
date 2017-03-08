@@ -208,7 +208,7 @@ export function rescindPoint( id ) {
 export function reloadPoints() {
   const points = new PointCollection();
   return dispatch => {
-    points.fetch().then( res => {
+    return points.fetch().then( res => {
 
       //copy all points into new variable
       let allPoints = points.store();
@@ -216,12 +216,12 @@ export function reloadPoints() {
       //copy only visible points into this new variable.
       var visiblePoints = {};
 
-      //getting all keys of all points. 
+      //getting all keys of all points.
       let allKeys = Object.keys(allPoints);
 
       //loop over all keys and copy each key value if it is visible
-      allKeys.forEach(function(key){ 
-        /* ( If key is not hidden ) AND ( No Expiration Field OR Expiration is Greater than Now ) 
+      allKeys.forEach(function(key){
+        /* ( If key is not hidden ) AND ( No Expiration Field OR Expiration is Greater than Now )
          * Then display the point.*/
         if(allPoints[key].is_hidden == false && (allPoints[key].expiration_date == null || new Date(allPoints[key].expiration_date) > new Date() )){
           visiblePoints[key] = allPoints[key];
@@ -301,7 +301,7 @@ export function flagPoint( id, reason ) {
         }
       } );
 
-    }; 
+    };
 }
 
 // Returns either the local (non-published) cover image URL or
@@ -313,7 +313,7 @@ export function getCoverPhotoURLForPointId( pointId ) {
     if(state.points.coverPhotoUrls[pointId] == null) {
       if(state.points.unpublishedCoverPhotos[pointId]) {
         return Promise.resolve().then( ( ) => {
-          base64StringToBlob(state.points.unpublishedCoverPhotos[pointId]).then((coverPhotoBlob) => { 
+          base64StringToBlob(state.points.unpublishedCoverPhotos[pointId]).then((coverPhotoBlob) => {
             let theUrl = URL.createObjectURL(coverPhotoBlob);
             dispatch( { type: SET_URL_FOR_POINTID, pointId: pointId, url: theUrl} );
           });
@@ -343,14 +343,19 @@ export function replicatePoints() {
     const time = new Date().toISOString();
     dispatch( { type: REQUEST_REPLICATION, time } );
 
-    local.replicate.from( remote, { retry: true } ).then( result => {
+    return local.replicate.from( remote, { retry: true } ).then( result => {
       dispatch( { type: RECEIVE_REPLICATION, time: result.end_time } );
-      dispatch( reloadPoints() );
-    } ).catch( err => {
+    } ).then(( ) => dispatch( reloadPoints() ) )
+    .catch( err => {
+      console.log(err);
       dispatch( { type: RECEIVE_REPLICATION, time: err.end_time } );
       dispatch( setSnackbar( { message: 'Unable to get points of interest from server' } ) );
     } );
   };
+}
+
+export function replicatePointsWithCallback(callbackFunc) {
+  return dispatch => Promise.resolve().then(() => dispatch(replicatePoints())).then(() => callbackFunc());
 }
 
 // # Replication Agent

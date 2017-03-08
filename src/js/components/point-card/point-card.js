@@ -110,7 +110,7 @@ static expiresOn( alert ) {
       return 'Expires On: ' + ex_date.toLocaleDateString(navigator.language, options);
   //else return no exipration date added
   }else{
-    return 'No expiration date added ' 
+    return 'No expiration date added '
   }
 }
 
@@ -152,7 +152,7 @@ static expiresOn( alert ) {
     if ( type === 'service' ) {
       update = (
         <MenuItem primaryText='Update Information'
-          onTouchTap={ this.navigate( 'update-service' ) } />
+          onTouchTap={ this.navigate( 'loading' ) } />
       );
       rate = (
         <MenuItem primaryText='Rate Service'
@@ -162,7 +162,7 @@ static expiresOn( alert ) {
 
       flag = (
       <MenuItem primaryText='Flag'
-          onTouchTap={ this.navigate( 'flag-point' ) } /> 
+          onTouchTap={ this.navigate( 'flag-point' ) } />
       );
 
     const button = (
