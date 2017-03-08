@@ -356,7 +356,6 @@ export function replicatePoints() {
 
 export function replicatePointsWithCallback(callbackFunc) {
   return dispatch => Promise.resolve().then(() => dispatch(replicatePoints())).then(() => callbackFunc());
-  //return dispatch => Promise.resolve().then(() => dispatch(replicatePoints())).then(() => console.log("THENNNNN"));
 }
 
 // # Replication Agent
