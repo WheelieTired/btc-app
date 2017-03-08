@@ -1,6 +1,6 @@
 /*eslint-disable no-unused-vars*/
 import React, { Component } from 'react';
-import { replicatePoints } from '../reducers/points';
+import { replicatePointsWithCallback } from '../reducers/points';
 
 import { LetterheadPage } from '../components/page';
 import { Block } from '../components/block';
@@ -8,19 +8,19 @@ import { Block } from '../components/block';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-export class LoadingPage extends Component {
-  getPageUrl() {
-    const id = encodeURIComponent( this.props.params.id );
-    return `loading/${ id }`;
-  }
+import history from '../history';
 
+export class LoadingPage extends Component {
   componentDidMount() {
     const {onlineMode} = this.props.settings;
     if ( onlineMode ){
-      replicatePoints().then(()=>{
-        this.navigate( 'update-service' );
-        console.log("updated points");
-        });
+	
+    let handler = (function(me){
+    	return function(){
+    		return history.push(`update-service/${ encodeURIComponent( me.props.params.id ) }`);
+    	}
+    }(this));
+      this.props.replicatePointsWithCallback(handler);
     }
   }
 
@@ -34,9 +34,8 @@ export class LoadingPage extends Component {
 
   static mapDispatchToProps( dispatch ) {
     return {
-      ...super.mapDispatchToProps( dispatch ),
       ...bindActionCreators( {
-        'replicatePoints': replicatePoints
+        'replicatePointsWithCallback': replicatePointsWithCallback
       }, dispatch )
     };
   }

@@ -208,7 +208,7 @@ export function rescindPoint( id ) {
 export function reloadPoints() {
   const points = new PointCollection();
   return dispatch => {
-    points.fetch().then( res => {
+    return points.fetch().then( res => {
 
       //copy all points into new variable
       let allPoints = points.store();
@@ -344,15 +344,19 @@ export function replicatePoints() {
     const time = new Date().toISOString();
     dispatch( { type: REQUEST_REPLICATION, time } );
 
-    local.replicate.from( remote, { retry: true } ).then( result => {
+    return local.replicate.from( remote, { retry: true } ).then( result => {
       dispatch( { type: RECEIVE_REPLICATION, time: result.end_time } );
-      dispatch( reloadPoints() );
-      console.log('reloading...');
-    } ).catch( err => {
+    } ).then( result => reloadPoints()).catch( err => {
+      console.log(err);
       dispatch( { type: RECEIVE_REPLICATION, time: err.end_time } );
       dispatch( setSnackbar( { message: 'Unable to get points of interest from server' } ) );
     } );
   };
+}
+
+export function replicatePointsWithCallback(callbackFunc) {
+  return dispatch => Promise.resolve().then(() => dispatch(replicatePoints())).then(() => callbackFunc());
+  //return dispatch => Promise.resolve().then(() => dispatch(replicatePoints())).then(() => console.log("THENNNNN"));
 }
 
 // # Replication Agent
