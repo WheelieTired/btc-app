@@ -148,11 +148,12 @@
 .point-card__media {
     width: inherit;
     flex-basis: 225px;
-    flex-grow: 1;
-    flex-shrink: 1;
-    background-size: cover;
+    flex-grow: auto;
+    flex-shrink: auto;
+    background-size: contain;
+    background-repeat: no-repeat;
     background-position: center;
-    background-color: grey;
+    background-color: black;
 }
 
 /*
