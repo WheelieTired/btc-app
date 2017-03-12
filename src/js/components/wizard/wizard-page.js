@@ -225,7 +225,7 @@ export class WizardPage extends Component {
 
             let context = canvas.getContext('2d');
             context.drawImage(loadedCoverBlob, 0, 0, newWidth, newHeight);
-            let resizedDataUrl = canvas.toDataURL('image/jpg');
+            let resizedDataUrl = canvas.toDataURL('image/jpeg');
 
             let resizedCoverBlob = dataURLToBlob(resizedDataUrl);
 
@@ -237,10 +237,15 @@ export class WizardPage extends Component {
       }
     }, err => {
       console.error( err );
-    }, {
-      sourceType: navigator.camera.PictureSourceType.PHOTOLIBRARY,
-      destinationType: navigator.camera.DestinationType.FILE_URI,
-      encodingType: navigator.camera.EncodingType.JPG
+    },{
+      // Some common settings are 20, 50, and 100
+      quality: 50,
+      destinationType: Camera.DestinationType.FILE_URI,
+      sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
+      encodingType: Camera.EncodingType.JPG,
+      mediaType: Camera.MediaType.PICTURE,
+      correctOrientation: true, //Corrects Android orientation quirks
+      cameraDirection: Camera.Direction.BACK
     } );
   }
 }
