@@ -1,7 +1,7 @@
 /*eslint-disable no-unused-vars*/
 import React, { Component } from 'react';
 
-import { AppBar, Badge, Drawer, FontIcon, MenuItem } from 'material-ui';
+import { AppBar, Badge, Drawer, Divider, FontIcon, MenuItem } from 'material-ui';
 
 import { Link } from 'react-router';
 /*eslint-enable no-unused-vars*/
@@ -40,9 +40,7 @@ export class BtcDrawer extends Component {
       title: 'Map',
       icon: 'map'
     }, {
-      link: 'filter',
-      title: 'Filter',
-      icon: 'filter_list'
+      divider: true
     }, {
       link: 'add-service',
       title: 'Add Service',
@@ -52,15 +50,17 @@ export class BtcDrawer extends Component {
       title: 'Add Alert',
       icon: 'warning'
     }, {
-      link: 'download-track',
-      title: 'Download Track',
-      icon: 'timeline'
-    }, {
       link: 'publish',
       title: 'Publish',
       icon: 'cloud_upload',
       badge: publishable
     }, {
+      divider: true
+    },/* {
+      link: 'download-track',
+      title: 'Download Track',
+      icon: 'timeline'
+    },*/ {
       link: 'settings',
       title: 'Settings',
       icon: 'settings'
@@ -68,7 +68,9 @@ export class BtcDrawer extends Component {
       link: 'about',
       title: 'About',
       icon: 'info'
-    } ];
+    }, {
+      divider: true
+    }];
 
     if ( login.loggedIn ) {
       pages.push( {
@@ -85,6 +87,10 @@ export class BtcDrawer extends Component {
     }
 
     let navs = pages.map( page => {
+      if( page.divider ) {
+        return ( <Divider/> ); // EARLY RETURN
+      }
+
       const icon = (
       <FontIcon className="material-icons">
         { page.icon }
