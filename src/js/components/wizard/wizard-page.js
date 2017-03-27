@@ -5,6 +5,10 @@ import { RaisedButton, FlatButton } from 'material-ui';
 /*eslint-enable no-unused-vars*/
 
 import Device, { PhotoEncodingMethods } from '../../util/device';
+import PointCard from '../point-card/point-card';
+
+import { connect } from 'react-redux';
+
 import { imgSrcToBlob, createObjectURL, base64StringToBlob, dataURLToBlob } from 'blob-util';
 
 import '../../../css/wizard.css';
@@ -195,11 +199,9 @@ export class WizardPage extends Component {
         promise.then( theBlob => {
           let loadedCoverBlob = document.createElement('img');
           loadedCoverBlob.src = URL.createObjectURL(theBlob);
-          // We need to reference this inside the onload function
-          loadedCoverBlob.wizardPage = this;
 
           // Need to wait for loadedCoverBlob to load and then keep working
-          loadedCoverBlob.onload = function() {
+          loadedCoverBlob.onload = event => {
             //Shrink the theBlob which was photo but now is a blob
             let MAX_WIDTH = 800;
             let MAX_HEIGHT = 600;
@@ -229,17 +231,22 @@ export class WizardPage extends Component {
 
             let resizedCoverBlob = dataURLToBlob(resizedDataUrl);
 
+            this.props.wizardActions.setSnackbar({ message: 'Successfully uploaded photo' });
+
             resizedCoverBlob.then(coverBlob => {
-              this.wizardPage.setState( { coverBlob } );
-            });
+            this.setState( { coverBlob } );
+            
+
+  			});
           };
-        } );
+
+        });
       }
-    }, err => {
-      console.error( err );
+    }, err =>  {
+      	console.error( err );
     },{
       // Some common settings are 20, 50, and 100
-      quality: 50,
+      quality: 100,     /* Camera.. */
       destinationType: Camera.DestinationType.FILE_URI,
       sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
       encodingType: Camera.EncodingType.JPG,
