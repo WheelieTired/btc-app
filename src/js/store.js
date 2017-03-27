@@ -24,15 +24,16 @@ if ( process.env.NODE_ENV === 'development' ) {
 }
 
 const theStore = compose.apply( null, args )( createStore )( combineReducers( {
+  account,
+  drawer,
+  filters,
+  map,
+  network,
   notifications,
   points,
-  tracks,
   settings,
-  network,
-  map,
-  filters,
-  account,
-drawer } ) );
+  tracks
+} ) );
 
 // Convert the immutable data to normal JS with the immutable library.
 function serializeMakeMutable(inboundState, key) {
