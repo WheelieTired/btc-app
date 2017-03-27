@@ -4,6 +4,7 @@ import { request } from '../../util/server';
 const REQUEST_RESET_PASSWORD = 'btc-app/account/REQUEST_RESET_PASSWORD';
 const RECEIVE_RESET_PASSWORD = 'btc-app/account/RECEIVE_RESET_PASSWORD';
 const FAILED_RESET_PASSWORD_VALIDATION = 'btc-app/account/FAILED_RESET_PASSWORD_VALIDATION';
+const CLEAR_RESET_VALIDATION_AND_ERROR = 'btc-app/account/CLEAR_RESET_VALIDATION_AND_ERROR';
 
 const initState = {
   fetching: false, // true during reset password request
@@ -30,6 +31,11 @@ export default function reducer( state = initState, action ) {
       fetching: false,
       received: false,
       validation: action.error || []
+    };
+  case CLEAR_RESET_VALIDATION_AND_ERROR:
+    return { ...state,
+      validation: [],
+      error: null
     };
   default:
     return state;
@@ -79,11 +85,6 @@ export function resetPassword( attrs, success ) {
   };
 }
 
-// The action to create when there are client-side validation errors
-function errorInResetPassword( error ) {
-  return { type: FAILED_RESET_PASSWORD_VALIDATION, error };
-}
-
 // The action to create when we send the reset password request to the server
 function requestResetPassword() {
   return { type: REQUEST_RESET_PASSWORD };
@@ -94,3 +95,12 @@ function receiveResetPassword( error ) {
   return { type: RECEIVE_RESET_PASSWORD, error };
 }
 
+// The action to create when there are client-side validation errors
+function errorInResetPassword( error ) {
+  return { type: FAILED_RESET_PASSWORD_VALIDATION, error };
+}
+
+// Clear stored validation and error state
+export function clearResetValidationAndError() {
+  return { type: CLEAR_RESET_VALIDATION_AND_ERROR };
+}

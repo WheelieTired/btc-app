@@ -4,6 +4,7 @@ import { request } from '../../util/server';
 const REQUEST_FORGOT_PASSWORD = 'btc-app/account/REQUEST_FORGOT_PASSWORD';
 const RECEIVE_FORGOT_PASSWORD = 'btc-app/account/RECEIVE_FORGOT_PASSWORD';
 const FAILED_FORGOT_PASSWORD_VALIDATION = 'btc-app/account/FAILED_FORGOT_PASSWORD_VALIDATION';
+const CLEAR_FORGOT_VALIDATION_AND_ERROR = 'btc-app/account/CLEAR_FORGOT_VALIDATION_AND_ERROR';
 
 const initState = {
   fetching: false, // true during forgot password request
@@ -30,6 +31,11 @@ export default function reducer( state = initState, action ) {
       fetching: false,
       received: false,
       validation: action.error || []
+    };
+  case CLEAR_FORGOT_VALIDATION_AND_ERROR:
+  	return {...state,
+      validation: [],
+      error: null
     };
   default:
     return state;
@@ -76,11 +82,6 @@ export function forgotPassword( attrs, success ) {
   };
 }
 
-// The action to create when there are client-side validation errors
-function errorInForgotPassword( error ) {
-  return { type: FAILED_FORGOT_PASSWORD_VALIDATION, error };
-}
-
 // The action to create when we send the forgot password request to the server
 function requestForgotPassword() {
   return { type: REQUEST_FORGOT_PASSWORD };
@@ -91,3 +92,12 @@ function receiveForgotPassword( error ) {
   return { type: RECEIVE_FORGOT_PASSWORD, error };
 }
 
+// The action to create when there are client-side validation errors
+function errorInForgotPassword( error ) {
+  return { type: FAILED_FORGOT_PASSWORD_VALIDATION, error };
+}
+
+// Clear stored validation and error state
+export function clearForgotValidationAndError() {
+  return { type: CLEAR_FORGOT_VALIDATION_AND_ERROR };
+}

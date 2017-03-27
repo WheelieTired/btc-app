@@ -9,7 +9,7 @@ import bindAll from 'lodash/bindAll';
 
 import history from '../history';
 
-import { forgotPassword } from '../reducers/account';
+import { forgotPassword, clearForgotValidationAndError } from '../reducers/account';
 import { setDrawer } from '../reducers/btc-drawer';
 
 const fields = [ {
@@ -25,6 +25,7 @@ export class ForgotPasswordPage extends Component {
 
   componentDidMount() {
     this.props.dispatch( setDrawer( 'Forgot Password' ) );
+    this.props.dispatch( clearForgotValidationAndError() );
   }
 
   // The FormBlock will call `onForgotPassword` with `values` as an object containing

@@ -10,7 +10,7 @@ import bindAll from 'lodash/bindAll';
 
 import history from '../history';
 
-import { login } from '../reducers/account';
+import { login, clearLoginValidationAndError } from '../reducers/account';
 import { setDrawer } from '../reducers/btc-drawer';
 import { setSnackbar } from '../reducers/notifications';
 
@@ -37,6 +37,7 @@ export class LoginPage extends Component {
 
   componentDidMount() {
     this.props.dispatch( setDrawer( 'Login' ) );
+    this.props.dispatch( clearLoginValidationAndError() );
   }
 
   // The FormBlock will call `onLogin` with `values` as an object containing
