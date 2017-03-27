@@ -1,10 +1,14 @@
 /*eslint-disable no-unused-vars*/
 import React, { Component } from 'react';
 import { keys, pick, assign, isFunction, bindAll, isEmpty } from 'lodash';
-import { RaisedButton, FlatButton } from 'material-ui';
+import { RaisedButton, FlatButton, Popover, Menu, MenuItem } from 'material-ui';
 /*eslint-enable no-unused-vars*/
 
 import Device, { PhotoEncodingMethods } from '../../util/device';
+import PointCard from '../point-card/point-card';
+
+import { connect } from 'react-redux';
+
 import { imgSrcToBlob, createObjectURL, base64StringToBlob, dataURLToBlob } from 'blob-util';
 
 import '../../../css/wizard.css';
@@ -26,7 +30,9 @@ export class WizardPage extends Component {
     super( props );
     bindAll( this, 'link', 'onPhotoAdd', 'persistBefore' );
 
-    this.state = {};
+    this.state = {
+      popoverOpen: false,
+    };
   }
 
   // # getPageFields
@@ -173,11 +179,58 @@ export class WizardPage extends Component {
       );
   }
 
+  openPhotoPopover(event) {
+    // This prevents ghost click.
+    event.preventDefault();
+
+    this.setState({
+      popoverOpen: true,
+      popoverAnchorEl: event.currentTarget,
+    });
+  }
+
+  closePhotoPopover() {
+    this.setState({
+      popoverOpen: false,
+    });
+  }
+
+  getPhotoButton() {
+  	return (
+  		<div>
+        <FlatButton
+          onTouchTap={this.openPhotoPopover.bind(this)}
+          label="Upload Photo"
+        />
+        <Popover
+          open={this.state.popoverOpen}
+          anchorEl={this.state.popoverAnchorEl}
+          anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+          targetOrigin={{horizontal: 'left', vertical: 'top'}}
+          onRequestClose={this.closePhotoPopover.bind(this)}
+        >
+          <Menu>
+            <MenuItem onTouchTap={ this.onPhotoAddFromCamera.bind(this) } primaryText="Camera" />
+            <MenuItem onTouchTap={ this.onPhotoAddFromLibrary.bind(this) } primaryText="Library" />
+          </Menu>
+        </Popover>
+      </div>
+  	);
+  }
+
+  onPhotoAddFromCamera() {
+  	this.onPhotoAdd(Camera.PictureSourceType.CAMERA);
+  }
+
+  onPhotoAddFromLibrary() {
+  	this.onPhotoAdd(Camera.PictureSourceType.PHOTOLIBRARY);
+  }
 
   // There is a bug in capturing a photo from the browser:
   // [CB-9852](https://issues.apache.org/jira/browse/CB-9852)
-  onPhotoAdd() {
+  onPhotoAdd(mySourceType) {
     navigator.camera.getPicture( photo => {
+
       let promise;
       const device = Device.getDevice();
       switch ( device.getPhotoEncodingMethod() ) {
@@ -195,11 +248,9 @@ export class WizardPage extends Component {
         promise.then( theBlob => {
           let loadedCoverBlob = document.createElement('img');
           loadedCoverBlob.src = URL.createObjectURL(theBlob);
-          // We need to reference this inside the onload function
-          loadedCoverBlob.wizardPage = this;
 
           // Need to wait for loadedCoverBlob to load and then keep working
-          loadedCoverBlob.onload = function() {
+          loadedCoverBlob.onload = event => {
             //Shrink the theBlob which was photo but now is a blob
             let MAX_WIDTH = 800;
             let MAX_HEIGHT = 600;
@@ -229,19 +280,24 @@ export class WizardPage extends Component {
 
             let resizedCoverBlob = dataURLToBlob(resizedDataUrl);
 
+            this.props.wizardActions.setSnackbar({ message: 'Successfully uploaded photo' });
+
             resizedCoverBlob.then(coverBlob => {
-              this.wizardPage.setState( { coverBlob } );
-            });
+            this.setState( { coverBlob } );
+            
+
+  			});
           };
-        } );
+
+        });
       }
-    }, err => {
-      console.error( err );
+    }, err =>  {
+      	console.error( err );
     },{
       // Some common settings are 20, 50, and 100
-      quality: 50,
+      quality: 100,     /* Camera.. */
       destinationType: Camera.DestinationType.FILE_URI,
-      sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
+      sourceType: mySourceType,
       encodingType: Camera.EncodingType.JPG,
       mediaType: Camera.MediaType.PICTURE,
       correctOrientation: true, //Corrects Android orientation quirks
