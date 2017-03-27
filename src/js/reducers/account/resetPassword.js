@@ -101,6 +101,6 @@ function errorInResetPassword( error ) {
 }
 
 // Clear stored validation and error state
-export function clearForgotValidationAndError() {
+export function clearResetValidationAndError() {
   return { type: CLEAR_RESET_VALIDATION_AND_ERROR };
 }
