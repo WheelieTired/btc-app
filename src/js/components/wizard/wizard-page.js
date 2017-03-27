@@ -1,7 +1,7 @@
 /*eslint-disable no-unused-vars*/
 import React, { Component } from 'react';
 import { keys, pick, assign, isFunction, bindAll, isEmpty } from 'lodash';
-import { RaisedButton, FlatButton } from 'material-ui';
+import { RaisedButton, FlatButton, Popover, Menu, MenuItem } from 'material-ui';
 /*eslint-enable no-unused-vars*/
 
 import Device, { PhotoEncodingMethods } from '../../util/device';
@@ -30,7 +30,9 @@ export class WizardPage extends Component {
     super( props );
     bindAll( this, 'link', 'onPhotoAdd', 'persistBefore' );
 
-    this.state = {};
+    this.state = {
+      popoverOpen: false,
+    };
   }
 
   // # getPageFields
@@ -177,11 +179,58 @@ export class WizardPage extends Component {
       );
   }
 
+  openPhotoPopover(event) {
+    // This prevents ghost click.
+    event.preventDefault();
+
+    this.setState({
+      popoverOpen: true,
+      popoverAnchorEl: event.currentTarget,
+    });
+  }
+
+  closePhotoPopover() {
+    this.setState({
+      popoverOpen: false,
+    });
+  }
+
+  getPhotoButton() {
+  	return (
+  		<div>
+        <FlatButton
+          onTouchTap={this.openPhotoPopover.bind(this)}
+          label="Upload Photo"
+        />
+        <Popover
+          open={this.state.popoverOpen}
+          anchorEl={this.state.popoverAnchorEl}
+          anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+          targetOrigin={{horizontal: 'left', vertical: 'top'}}
+          onRequestClose={this.closePhotoPopover.bind(this)}
+        >
+          <Menu>
+            <MenuItem onTouchTap={ this.onPhotoAddFromCamera.bind(this) } primaryText="Camera" />
+            <MenuItem onTouchTap={ this.onPhotoAddFromLibrary.bind(this) } primaryText="Library" />
+          </Menu>
+        </Popover>
+      </div>
+  	);
+  }
+
+  onPhotoAddFromCamera() {
+  	this.onPhotoAdd(Camera.PictureSourceType.CAMERA);
+  }
+
+  onPhotoAddFromLibrary() {
+  	this.onPhotoAdd(Camera.PictureSourceType.PHOTOLIBRARY);
+  }
 
   // There is a bug in capturing a photo from the browser:
   // [CB-9852](https://issues.apache.org/jira/browse/CB-9852)
-  onPhotoAdd() {
+  onPhotoAdd(mySourceType) {
     navigator.camera.getPicture( photo => {
+
       let promise;
       const device = Device.getDevice();
       switch ( device.getPhotoEncodingMethod() ) {
@@ -248,7 +297,7 @@ export class WizardPage extends Component {
       // Some common settings are 20, 50, and 100
       quality: 100,     /* Camera.. */
       destinationType: Camera.DestinationType.FILE_URI,
-      sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
+      sourceType: mySourceType,
       encodingType: Camera.EncodingType.JPG,
       mediaType: Camera.MediaType.PICTURE,
       correctOrientation: true, //Corrects Android orientation quirks
