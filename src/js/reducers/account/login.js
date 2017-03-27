@@ -30,7 +30,7 @@ export default function reducer( state = initState, action ) {
   case RECEIVE_LOGIN:
     return {...state,
       loggedIn: action.loggedIn,
-      email: action.error ? null : newState.email,
+      email: action.error ? null : state.email,
       fetching: false,
       token: action.token,
       roles: action.roles,
