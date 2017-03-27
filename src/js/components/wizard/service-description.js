@@ -66,8 +66,7 @@ export class ServiceDescription extends WizardPage {
 
   getPageSecondaryActions() {
     return (
-      <FlatButton onTouchTap={ this.onPhotoAdd }
-        label="Upload Photo" />
+      this.getPhotoButton()
       );
   }
 
