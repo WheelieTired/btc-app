@@ -3,6 +3,7 @@ import notifications from './reducers/notifications';
 import points from './reducers/points';
 import tracks from './reducers/tracks';
 import settings from './reducers/settings';
+import { setShownOnboarding } from './reducers/settings';
 import network from './reducers/network';
 import map from './reducers/map';
 import filters from './reducers/filter';
@@ -13,6 +14,7 @@ import { fromJS } from 'immutable';
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import { persistStore, autoRehydrate, createTransform } from 'redux-persist'
 import thunk from 'redux-thunk';
+import history from './history';
 
 const devTools = typeof window === 'object' && typeof window.devToolsExtension !== 'undefined' ? window.devToolsExtension() : f => f;
 
@@ -75,6 +77,12 @@ let debugPrintTransformer = createTransform(
 */
 
 // Don't persist the drawer state (basically the title on the nav bar).
-persistStore(theStore, {transforms: [immutableTransformer/*, debugPrintTransformer*/], blacklist: ['drawer']});
+persistStore(theStore, {transforms: [immutableTransformer/*, debugPrintTransformer*/], blacklist: ['drawer', 'map', 'network', 'notifications']}, () => {
+  // This is called once the store is loaded.
+  if (!theStore.getState().settings.shownOnboarding) {
+    theStore.dispatch(setShownOnboarding(true));
+    history.push(`/onboarding`);
+  }
+});
 
 export default theStore;
