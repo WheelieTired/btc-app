@@ -30,7 +30,9 @@ body, html {
 }
 
 .layout__header {
-
+    position: sticky !important;
+    position: -webkit-sticky !important;
+    top: 0 !important;
 }
 
 /*

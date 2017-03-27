@@ -86,10 +86,12 @@ export class App extends Component {
     const page = React.Children.only( this.props.children );
 
     return (
-      <div className='layout'>
+      <div>
         <BtcDrawer />
+        <div className='layout'>
         { page }
         <Notifications />
+        </div>
       </div>
       );
   }
