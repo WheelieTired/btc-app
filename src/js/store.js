@@ -22,15 +22,16 @@ if ( process.env.NODE_ENV === 'development' ) {
 }
 
 const theStore = compose.apply( null, args )( createStore )( combineReducers( {
+  account,
+  drawer,
+  filters,
+  map,
+  network,
   notifications,
   points,
-  tracks,
   settings,
-  network,
-  map,
-  filters,
-  account,
-drawer } ) );
+  tracks
+} ) );
 
 // Convert the immutable data to normal JS with the immutable library.
 function serializeMakeMutable(inboundState, key) {
@@ -75,6 +76,6 @@ let debugPrintTransformer = createTransform(
 */
 
 // Don't persist the drawer state (basically the title on the nav bar).
-persistStore(theStore, {transforms: [immutableTransformer/*, debugPrintTransformer*/], blacklist: ['drawer']});
+persistStore(theStore, {transforms: [immutableTransformer/*, debugPrintTransformer*/], blacklist: ['drawer', 'map', 'network', 'notifications']});
 
 export default theStore;
