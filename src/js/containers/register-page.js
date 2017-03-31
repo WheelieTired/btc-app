@@ -9,7 +9,7 @@ import bindAll from 'lodash/bindAll';
 
 import history from '../history';
 
-import { register } from '../reducers/account';
+import { register, clearRegistrationValidationAndError } from '../reducers/account';
 import { setDrawer } from '../reducers/btc-drawer';
 
 const fields = [ {
@@ -37,6 +37,7 @@ export class RegisterPage extends Component {
 
   componentDidMount() {
     this.props.dispatch( setDrawer( 'Register' ) );
+    this.props.dispatch( clearRegistrationValidationAndError() );
   }
 
   // The FormBlock will call `onRegister` with `values` as an object containing

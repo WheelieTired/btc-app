@@ -7,11 +7,11 @@ import usbr20 from '../usbr20.json';
 
 import { MBTILES_SERVER, MBTILES_SERVER_ROOT, hackDatabasePath } from '../config';
 
-const REQUEST = 'pannier/tracks/REQUEST';
-const RECEIVE = 'pannier/tracks/RECEIVE';
-const CLEAR = 'pannier/tracks/CLEAR';
-const ACTIVATE = 'pannier/tracks/ACTIVATE';
-const DEACTIVATE = 'pannier/tracks/DEACTIVATE';
+const REQUEST = 'btc-app/tracks/REQUEST';
+const RECEIVE = 'btc-app/tracks/RECEIVE';
+const CLEAR = 'btc-app/tracks/CLEAR';
+const ACTIVATE = 'btc-app/tracks/ACTIVATE';
+const DEACTIVATE = 'btc-app/tracks/DEACTIVATE';
 
 /**
  * TODO: Investigate performance hit of loading waypoints JSON into
@@ -48,36 +48,36 @@ const initState = fromJS( {
 } );
 
 export default function reducer( state = initState, action ) {
-  let newState = cloneDeep(state);
   switch ( action.type ) {
   case REQUEST:
-    return newState.mergeDeepIn( [ action.id ], {
+    state = cloneDeep(state);
+    return state.mergeDeepIn( [ action.id ], {
       isFetching: action.progress
     } );
   case RECEIVE:
-    return newState.mergeDeepIn( [ action.id ], {
+    state = cloneDeep(state);
+    return state.mergeDeepIn( [ action.id ], {
       isFetching: false,
       status: action.status
     } );
   case CLEAR:
-    return newState.mergeDeepIn( [ action.id ], {
+    state = cloneDeep(state);
+    return state.mergeDeepIn( [ action.id ], {
       status: 'absent'
     } );
   case DEACTIVATE:
-    return newState.mergeDeepIn( [ action.id ], {
+    state = cloneDeep(state);
+    return state.mergeDeepIn( [ action.id ], {
       active: false
     } );
   case ACTIVATE:
-    return newState.mergeDeepIn( [ action.id ], {
+    state = cloneDeep(state);
+    return state.mergeDeepIn( [ action.id ], {
       active: true
     } );
   default:
-    // By default, return the original, uncloned state.
-    // This makes sure that autorehydrate doesn't drop out.
     return state;
   }
-  // Catch any cases that decide to mutate without returning.
-  return newState;
 }
 
 /*

@@ -1,17 +1,15 @@
-import { assign, cloneDeep } from 'lodash';
-
 import { Login } from 'btc-models';
 import { request } from '../../util/server';
 
 const REQUEST_LOGIN = 'btc-app/account/REQUEST_LOGIN';
 const RECEIVE_LOGIN = 'btc-app/account/RECEIVE_LOGIN';
 const FAILED_LOGIN_VALIDATION = 'btc-app/account/FAILED_LOGIN_VALIDATION';
+const CLEAR_LOGIN_VALIDATION_AND_ERROR = 'btc-app/account/CLEAR_LOGIN_VALIDATION_AND_ERROR';
 const LOGOUT = 'btc-app/account/LOGOUT';
 
 const initState = {
   loggedIn: false,
   email: null,
-  password: null,
   fetching: false, // true during login request
   received: false, // false until login response received
   token: null,
@@ -20,41 +18,42 @@ const initState = {
 };
 
 export default function reducer( state = initState, action ) {
-  let newState = cloneDeep(state);
   switch ( action.type ) {
   case REQUEST_LOGIN:
-    return assign( {}, newState, {
+    return {...state,
       loggedIn: false,
       email: action.email,
-      password: action.password,
       fetching: true,
       validation: [],
       error: null
-    } );
+    };
   case RECEIVE_LOGIN:
-    return assign( {}, newState, {
+    return {...state,
       loggedIn: action.loggedIn,
+      email: action.error ? null : state.email,
       fetching: false,
       token: action.token,
       roles: action.roles,
       validation: [],
       error: action.error || null
-    } );
+    };
   case FAILED_LOGIN_VALIDATION:
-    return assign( {}, newState, {
+    return {...state,
       loggedIn: false,
+      email: null,
       fetching: false,
       validation: action.error || []
-    } );
+    };
+  case CLEAR_LOGIN_VALIDATION_AND_ERROR:
+    return {...state,
+      validation: [],
+      error: null
+    };
   case LOGOUT:
-    return assign( {}, initState );
+    return {...initState};
   default:
-    // By default, return the original, uncloned state.
-    // This makes sure that autorehydrate doesn't drop out.
     return state;
   }
-  // Catch any cases that decide to mutate without returning.
-  return newState;
 }
 
 // Asyncronous action creator that will ask the app server for an api
@@ -70,7 +69,7 @@ export function login( attrs, success ) {
   }
 
   return dispatch => {
-    dispatch( requestLogin( attrs.email, attrs.password ) );
+    dispatch( requestLogin( attrs.email ) );
 
     return new Promise( ( resolve, reject ) => {
       request.post( '/authenticate' )
@@ -104,8 +103,8 @@ function errorInLogin( error ) {
 }
 
 // Notify the store that a login request has begun
-function requestLogin( email, password ) {
-  return { type: REQUEST_LOGIN, email, password };
+function requestLogin( email ) {
+  return { type: REQUEST_LOGIN, email };
 }
 
 // Notify the store that a login request has completed, and pass in
@@ -118,6 +117,11 @@ function recieveLogin( token, error ) {
     action.loggedIn = true;
   }
   return action;
+}
+
+// Clear stored validation and error state
+export function clearLoginValidationAndError() {
+  return { type: CLEAR_LOGIN_VALIDATION_AND_ERROR };
 }
 
 // Notify the store to log out the user
