@@ -1,39 +1,14 @@
 
 /*
  * Both the body and html sections should fill the entire screen.
- */
-body, html {
-  margin: 0;
-  padding: 0;
-
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-
-  overflow: hidden;
-
-  -webkit-overflow-scrolling: auto;
-}
-
-/*
- * The react app is rendered into the main div. It should fill the entire
+ * The React app is rendered into the main div. It should fill the entire
  * screen as well.
  */
-#main {
+body, html, #main {
   margin: 0;
   padding: 0;
-
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-
-  overflow: hidden;
-
-  -webkit-overflow-scrolling: auto;
+  width: 100%;
+  height: 100%;
 }
 
 /*
@@ -49,14 +24,10 @@ body, html {
  * This wraps all the content under the navigation bar.
  */
 .layout {
-  position: fixed !important;
+  position: absolute !important;
   top: 64px;
-  bottom: 0;
   left: 0;
   right: 0;
-
-	overflow-y: scroll;
-  -webkit-overflow-scrolling: touch;
 }
 
 /*
