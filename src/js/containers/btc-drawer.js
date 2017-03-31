@@ -109,8 +109,8 @@ export class BtcDrawer extends Component {
     } );
 
     return (
-      <AppBar className="layout__navigation"
-              title={ this.props.drawer }
+      <AppBar className="navigation_bar" 
+      title={ this.props.drawer }
               onLeftIconButtonTouchTap={ this.showNav }>
         <Drawer docked={ false }
           onRequestChange={ this.hideNav }

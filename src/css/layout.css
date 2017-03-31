@@ -19,31 +19,35 @@ body, html {
 }
 
 /*
- * This wraps all the content.
- */
-.layout {
-}
-
-/*
  * This is the blue bar at the top of the screen.
  */
-.layout__navigation {
-    position: sticky !important;
-    position: -webkit-sticky !important;
-    top: 0 !important;
+.navigation_bar {
+
 }
 
 /*
- * This is used to wrap all pages.
+ * This wraps all the content under the navigation bar.
+ */
+.layout {
+	height: calc(100vh - 64px);
+	width: 100vw;
+
+	overflow-y: scroll;
+}
+
+/*
+ * This wraps all normal scrolling pages.
  */
 .layout__section {
+
 }
 
 /*
- * This is used when a fullsize flexbox is needed.
+ * This is a replacement for layout__section on pages that need an inner flexbox.
  */
 .layout__section__fullflex {
-    height: calc(100vh - 64px);
+	height: calc(100vh - 64px);
+	width: 100vw;
 
     display: flex;
     flex-direction: column;
