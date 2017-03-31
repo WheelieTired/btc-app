@@ -39,6 +39,18 @@ body, html {
 .layout__section {
 }
 
+/*
+ * This is used when a fullsize flexbox is needed.
+ */
+.layout__section__fullflex {
+    height: calc(100vh - 64px);
+
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    align-content: flex-start;
+}
+
 h1, h2, h3, h4, h5, h6, div, span {
     font-family: 'Roboto', sans-serif;
 }

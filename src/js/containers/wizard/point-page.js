@@ -301,7 +301,7 @@ export default class PointPage extends Component {
     const content = this.isReady() ? wizardPageWithProps : spinner;
 
     return (
-      <div className='layout__section'>
+      <div className='layout__section__fullflex'>
         <Tabs value={ wizardPage.type }
           className='tabs-bar'>
           { tabs }
