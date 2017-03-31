@@ -29,8 +29,11 @@ body, html {
  * This wraps all the content under the navigation bar.
  */
 .layout {
-	height: calc(100vh - 64px);
-	width: 100vw;
+  position: absolute;
+  top: 64px;
+  bottom: 0;
+  left: 0;
+  right: 0;
 
 	overflow-y: scroll;
 }
@@ -46,13 +49,16 @@ body, html {
  * This is a replacement for layout__section on pages that need an inner flexbox.
  */
 .layout__section__fullflex {
-	height: calc(100vh - 64px);
-	width: 100vw;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    align-content: flex-start;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  align-content: flex-start;
 }
 
 h1, h2, h3, h4, h5, h6, div, span {
