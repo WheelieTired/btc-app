@@ -3,10 +3,18 @@
  * Both the body and html sections should fill the entire screen.
  */
 body, html {
-    height: 100%;
-    width: 100%;
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
+
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  overflow: hidden;
+
+  -webkit-overflow-scrolling: auto;
 }
 
 /*
@@ -14,28 +22,41 @@ body, html {
  * screen as well.
  */
 #main {
-    height: 100%;
-    width: 100%;
+  margin: 0;
+  padding: 0;
+
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  overflow: hidden;
+
+  -webkit-overflow-scrolling: auto;
 }
 
 /*
  * This is the blue bar at the top of the screen.
  */
 .navigation_bar {
-
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
 }
 
 /*
  * This wraps all the content under the navigation bar.
  */
 .layout {
-  position: absolute;
+  position: fixed !important;
   top: 64px;
   bottom: 0;
   left: 0;
   right: 0;
 
 	overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
 }
 
 /*
@@ -49,8 +70,8 @@ body, html {
  * This is a replacement for layout__section on pages that need an inner flexbox.
  */
 .layout__section__fullflex {
-  position: absolute;
-  top: 0;
+  position: fixed;
+  top: 64px;
   bottom: 0;
   left: 0;
   right: 0;

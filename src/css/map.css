@@ -1,5 +1,5 @@
 /*
- * The map is always absolutely positioned below everything taking up 100%
+ * The map is always fixed positioned below everything taking up 100%
  * of the screen. This way, the map center is always true no matter what
  * content might overlay the map.
  *
@@ -9,7 +9,7 @@
  *  - wizard-mode, in which we want to hide the zoom controls.
  */
 .map {
-    position: absolute;
+    position: fixed;
     height: 100%;
     width: 100%;
     top: 0;
@@ -20,6 +20,14 @@
 
 .mapButtons {
     z-index: 1000;
+}
+
+/*
+ * In browsing mode, we need to place the controls below the MUI header, which
+ * is 60px tall. We add 4px to preserve the margins of the control area
+ */
+.map--browse-mode .leaflet-top {
+    top: 64px;
 }
 
 /*
