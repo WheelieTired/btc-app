@@ -83,7 +83,7 @@ class MapPage extends Component {
       selectMarker: point => MapPage.navigateWithId( 'peek-point', point )
     };
     return (
-      <div className="layout__section">
+      <div className="map_flex">
         <ConnectedPointMap className="map map--browse-mode"
           { ...props } />
         <MapButtons buttons={ buttons }

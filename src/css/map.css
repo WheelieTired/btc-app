@@ -22,6 +22,15 @@
     z-index: 1000;
 }
 
+.map_flex {
+    height: calc(100vh - 64px);
+
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    align-content: flex-start;
+}
+
 /*
  * In browsing mode, we need to place the controls below the MUI header, which
  * is 60px tall. We add 4px to preserve the margins of the control area

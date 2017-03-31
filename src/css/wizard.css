@@ -4,9 +4,6 @@
  */
 .tabs-bar {
     z-index: 1000;
-    position: sticky !important;
-    position: -webkit-sticky !important;
-    top: 0px !important;
 }
 
 

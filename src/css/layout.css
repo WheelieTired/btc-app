@@ -19,32 +19,24 @@ body, html {
 }
 
 /*
- * The layout div contains the app bar and the rest of the page content.
- * It lays out both of those componenets with a columnar flexbox.
+ * This wraps all the content.
  */
 .layout {
-    height: inherit;
-    width: inherit;
-    display: flex;
-    flex-direction: column;
 }
 
-.layout__header {
+/*
+ * This is the blue bar at the top of the screen.
+ */
+.layout__navigation {
     position: sticky !important;
     position: -webkit-sticky !important;
     top: 0 !important;
 }
 
 /*
- * The rest of the page content, besides the app bar. It should fill the
- * remaining space of the layour container.
+ * This is used to wrap all pages.
  */
 .layout__section {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    align-items: stretch;
-    overflow-y: visible;
 }
 
 h1, h2, h3, h4, h5, h6, div, span {
