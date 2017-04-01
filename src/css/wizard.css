@@ -4,6 +4,10 @@
  */
 .tabs-bar {
     z-index: 1000;
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
 }
 
 
@@ -13,6 +17,7 @@
  * app bar).
  */
 .tabs-content {
+    padding-top: 48px;
     display: flex;
     flex-grow: 1;
     flex-direction: column;
@@ -27,7 +32,6 @@
     flex-grow: 1;
     flex-direction: row;
     justify-content: center;
-    overflow-y: auto;
     align-items: flex-start;
 }
 
