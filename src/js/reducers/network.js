@@ -1,12 +1,9 @@
-import { cloneDeep } from 'lodash';
-import objectAssign from 'object-assign';
-
 import { Agent } from '../util/agent';
 import Device from '../util/device';
 
 import { bindAll } from 'underscore';
 
-export const CONNECTION = 'pannier/network/CONNECTION';
+export const CONNECTION = 'btc-app/network/CONNECTION';
 
 const initState = {
   online: false,
@@ -14,17 +11,12 @@ const initState = {
 };
 
 export default function reducer( state = initState, action ) {
-  let newState = cloneDeep(state);
   switch ( action.type ) {
   case CONNECTION:
-    return objectAssign( {}, newState, action.status );
+    return { ...state, ...action.status };
   default:
-    // By default, return the original, uncloned state.
-    // This makes sure that autorehydrate doesn't drop out.
     return state;
   }
-  // Catch any cases that decide to mutate without returning.
-  return newState;
 }
 
 /**

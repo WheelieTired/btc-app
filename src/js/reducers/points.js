@@ -47,99 +47,117 @@ const initState = {
 };
 
 export default function reducer( state = initState, action ) {
-  let newState = cloneDeep( state );
-  const idPath = 'points.' + action.id;
   switch ( action.type ) {
-  /*case REHYDRATE:
-  	var incoming = action.payload.points;
+  case REHYDRATE:
+  	state = cloneDeep(state);
+    var incoming = action.payload.points;
   	if(incoming) {
-		// Clear the photo URLs; local ones are transient and only valid for the current page load;
-		// they will be regenerated next time they are needed.
-		newState = {...newState, ...incoming, coverPhotoUrls: {}}
+		  // Clear the photo URLs; local ones are transient and only valid for the current page load;
+		  // they will be regenerated next time they are needed.
+		  state = {...state, ...incoming, coverPhotoUrls: {}}
   	}
+    return state;
   	break;
-  	*/
   case UPDATE_SERVICE:
   case ADD_SERVICE:
   case ADD_ALERT:
+    state = cloneDeep(state);
     // Make sure the point isn't already in our updated list.
-    if(newState.publish.updated.indexOf(action.id) < 0) {
-      let updatedPoints = cloneDeep( newState.publish.updated );
+    if(state.publish.updated.indexOf(action.id) < 0) {
+      let updatedPoints = cloneDeep( state.publish.updated );
       updatedPoints.push(action.id);
-      set( newState, 'publish.updated', updatedPoints );
+      set( state, 'publish.updated', updatedPoints );
     }
-    set( newState, idPath, action.point );
+    set( state, 'points.' + action.id, action.point );
 
     if( action.photo ) {
-      set( newState, 'unpublishedCoverPhotos.' + action.id, action.photo );
+      set( state, 'unpublishedCoverPhotos.' + action.id, action.photo );
       // Clear the URL to make sure we get the new (local) photo next time
-      unset( newState, 'coverPhotoUrls.' + action.id );
+      unset( state, 'coverPhotoUrls.' + action.id );
     }
+    return state;
     break;
   case RESCIND_POINT:
+    state = cloneDeep(state);
     // Make sure the point is in our updated list.
-    let updatedPoints = cloneDeep( newState.publish.updated );
+    let updatedPoints = cloneDeep( state.publish.updated );
     let idIndex = updatedPoints.indexOf(action.id);
     if(idIndex >= 0) {
       // Remove the point from our updated list.
       updatedPoints.splice(idIndex, 1);
       // Update the updated list.
-      set( newState, 'publish.updated', updatedPoints );
+      set( state, 'publish.updated', updatedPoints );
       // Unset the point (it should be readded to the state with reloadPoints).
-      unset( newState, idPath );
+      unset( state, 'points.' + action.id );
       // Clear any photo for it
-      unset( newState, 'unpublishedCoverPhotos.' + action.id );
-      unset( newState, 'coverPhotoUrls.' + action.id );
+      unset( state, 'unpublishedCoverPhotos.' + action.id );
+      unset( state, 'coverPhotoUrls.' + action.id );
     } else {
       console.warn("Trying to remove a point that wasn't added.");
     }
+    return state;
     break;
   case RELOAD_POINTS:
-    set( newState, 'points', action.points );
+    state = cloneDeep(state);
+    set( state, 'points', action.points );
+    return state;
     break;
   case REQUEST_LOAD_POINT:
-    set( newState, idPath, { isFetching: true } );
+    state = cloneDeep(state);
+    set( state, 'points.' + action.id, { isFetching: true } );
+    return state;
     break;
   case RECEIVE_LOAD_POINT:
-    set( newState, idPath, { isFetching: false, ...action.point } );
+    state = cloneDeep(state);
+    set( state, 'points.' + action.id, { isFetching: false, ...action.point } );
+    return state;
     break;
   case REQUEST_REPLICATION:
-    set( newState, 'replication', { time: action.time, inProgress: true } );
+    state = cloneDeep(state);
+    set( state, 'replication', { time: action.time, inProgress: true } );
+    return state;
     break;
   case RECEIVE_REPLICATION:
-    set( newState, 'replication', { time: action.time, inProgress: false } );
+    state = cloneDeep(state);
+    set( state, 'replication', { time: action.time, inProgress: false } );
     // Clear the photo URLs; they will be regenerated next time they are needed.
-    set( newState, 'coverPhotoUrls', {} );
+    set( state, 'coverPhotoUrls', {} );
+    return state;
     break;
   case REQUEST_PUBLISH:
-    set( newState, 'publish.inProgress', true );
+    state = cloneDeep(state);
+    set( state, 'publish.inProgress', true );
+    return state;
     break;
   case RECEIVE_PUBLISH:
-    set( newState, 'publish.inProgress', false );
+    state = cloneDeep(state);
+    set( state, 'publish.inProgress', false );
     if ( action.err == null ) {
-      set( newState, 'publish.updated', [] );
-      set( newState, 'unpublishedCoverPhotos', {} );
+      set( state, 'publish.updated', [] );
+      set( state, 'unpublishedCoverPhotos', {} );
     }
+    return state;
     break;
   case CLEAR_CACHED_POINTS:
+    state = cloneDeep(state);
     // Clear the state's version of the points.
-    set( newState, 'points', {} );
+    set( state, 'points', {} );
     // This only clears the list of unpublished points, not the points themselves.
-    set( newState, 'publish.updated', [] );
+    set( state, 'publish.updated', [] );
     // Clear any unpublished photos.
-    set( newState, 'unpublishedCoverPhotos', {} );
+    set( state, 'unpublishedCoverPhotos', {} );
     // Clear the photo URLs; they will be regenerated next time they are needed.
-    set( newState, 'coverPhotoUrls', {} );
+    set( state, 'coverPhotoUrls', {} );
+    return state;
     break;
   case SET_URL_FOR_POINTID:
-    set( newState, 'coverPhotoUrls.' + action.pointId, action.url );
+    state = cloneDeep(state);
+    set( state, 'coverPhotoUrls.' + action.pointId, action.url );
+    return state;
     break;
   default:
-    // By default, return the original, uncloned state.
-    // This makes sure that autorehydrate doesn't drop out.
     return state;
   }
-  return newState;
 }
 
 // # Generic Add & Update Logic

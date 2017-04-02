@@ -10,6 +10,7 @@ import { bindActionCreators } from 'redux';
 import { loadPoint, publishPoints } from '../../reducers/points';
 import { setMapCenter } from '../../reducers/map';
 import { setDrawer } from '../../reducers/btc-drawer';
+import { setSnackbar } from '../../reducers/notifications/snackbar';
 
 
 import history from '../../history';
@@ -343,7 +344,8 @@ export default class PointPage extends Component {
         publishPoints: publishPoints
       }, dispatch ),
       wizardActions: bindActionCreators( {
-        setDrawer: setDrawer
+        setDrawer: setDrawer,
+        setSnackbar: setSnackbar
       }, dispatch )
     };
   }

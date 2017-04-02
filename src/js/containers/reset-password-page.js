@@ -9,7 +9,7 @@ import bindAll from 'lodash/bindAll';
 
 import history from '../history';
 
-import { resetPassword } from '../reducers/account';
+import { resetPassword, clearResetValidationAndError } from '../reducers/account';
 import { setDrawer } from '../reducers/btc-drawer';
 
 const fields = [ {
@@ -28,6 +28,7 @@ export class ResetPasswordPage extends Component {
 
   componentDidMount() {
     this.props.dispatch( setDrawer( 'Password Reset' ) );
+    this.props.dispatch( clearResetValidationAndError() );
   }
 
   // The FormBlock will call `onResetPassword` with `values` as an object containing

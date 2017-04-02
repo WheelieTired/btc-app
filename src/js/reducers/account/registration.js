@@ -1,11 +1,10 @@
-import { assign, cloneDeep } from 'lodash';
-
 import { User } from 'btc-models';
 import { request } from '../../util/server';
 
 const REQUEST_REGISTRATION = 'btc-app/account/REQUEST_REGISTRATION';
 const RECEIVE_REGISTRATION = 'btc-app/account/RECEIVE_REGISTRATION';
 const FAILED_REG_VALIDATION = 'btc-app/account/FAILED_REG_VALIDATION';
+const CLEAR_REGISTRATION_VALIDATION_AND_ERROR = 'btc-app/account/CLEAR_REGISTRATION_VALIDATION_AND_ERROR';
 
 const initState = {
   fetching: false, // true during registration request
@@ -15,32 +14,32 @@ const initState = {
 };
 
 export default function reducer( state = initState, action ) {
-  let newState = cloneDeep(state);
   switch ( action.type ) {
   case REQUEST_REGISTRATION:
-    return assign( {}, newState, {
+    return { ...state,
       fetching: true
-    } );
+    };
   case RECEIVE_REGISTRATION:
-    return assign( {}, newState, {
+    return { ...state,
       fetching: false,
       received: true,
       validation: [],
       error: action.error || null
-    } );
+    };
   case FAILED_REG_VALIDATION:
-    return assign( {}, newState, {
+    return { ...state,
       fetching: false,
       received: false,
       validation: action.error || []
-    } );
+    };
+  case CLEAR_REGISTRATION_VALIDATION_AND_ERROR:
+    return { ...state,
+      validation: [],
+      error: null
+    };
   default:
-    // By default, return the original, uncloned state.
-    // This makes sure that autorehydrate doesn't drop out.
     return state;
   }
-  // Catch any cases that decide to mutate without returning.
-  return newState;
 }
 
 // This action validates User attributes then sends a registration request
@@ -91,11 +90,6 @@ export function register( attrs, success ) {
   };
 }
 
-// The action to create when there are client-side validation errors
-function errorInRegistration( error ) {
-  return { type: FAILED_REG_VALIDATION, error };
-}
-
 // The action to create when we send the registration request to the server
 function requestRegistration() {
   return { type: REQUEST_REGISTRATION };
@@ -104,4 +98,14 @@ function requestRegistration() {
 // The action to create when there is a server error during registration
 function receiveRegistration( error ) {
   return { type: RECEIVE_REGISTRATION, error };
+}
+
+// The action to create when there are client-side validation errors
+function errorInRegistration( error ) {
+  return { type: FAILED_REG_VALIDATION, error };
+}
+
+// Clear stored validation and error state
+export function clearRegistrationValidationAndError() {
+  return { type: CLEAR_REGISTRATION_VALIDATION_AND_ERROR };
 }
