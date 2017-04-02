@@ -11,8 +11,8 @@ export function observeStore( store, select, callback ) {
   return store.subscribe( ( ) => {
     const update = select( store.getState() );
     if ( !isEqual( cache, update ) ) {
+      cache = update;
       callback();
     }
-    cache = update;
   } );
 }

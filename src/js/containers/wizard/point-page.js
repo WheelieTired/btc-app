@@ -12,7 +12,6 @@ import { setMapCenter } from '../../reducers/map';
 import { setDrawer } from '../../reducers/btc-drawer';
 import { setSnackbar } from '../../reducers/notifications/snackbar';
 
-
 import history from '../../history';
 import '../../../css/layout.css';
 
@@ -238,16 +237,19 @@ export default class PointPage extends Component {
         if ( this.isTabValid() ) {
           this.navAttempt = false;
           onFinal();
+          if ( isOnline ) {
+            pageActions.publishPoints();
+          }
         }
       } );
     } else {
       if ( this.isPointValid().valid ) {
         this.navAttempt = false;
         onFinal();
+        if ( isOnline ) {
+          pageActions.publishPoints();
+        }
       }
-    }
-    if ( isOnline ) {
-      pageActions.publishPoints();
     }
   }
 
