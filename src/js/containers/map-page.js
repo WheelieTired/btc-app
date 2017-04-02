@@ -78,7 +78,7 @@ class MapPage extends Component {
       page: 'filter',
       icon: 'filter_list'
     }, {
-      page: '/',
+      method: 'centerMap',
       icon: 'my_location'
     } ];
     const props = {
