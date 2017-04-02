@@ -249,7 +249,15 @@ export class WizardPage extends Component {
   // There is a bug in capturing a photo from the browser:
   // [CB-9852](https://issues.apache.org/jira/browse/CB-9852)
   onPhotoAdd(mySourceType) {
+    // Close the popover now that they selected a source.
+    this.setState({ popoverOpen: false });
+
+    // Work around WKWebView being too big on iOS after using this plugin.
+    // We show the bar again in both the success and error cases.
+    StatusBar.hide();
+
     navigator.camera.getPicture( photo => {
+      StatusBar.show();
 
   		let loadedCoverImage = document.createElement('img');
   		// Need to wait for loadedCoverImage to load and then keep working
@@ -311,6 +319,7 @@ export class WizardPage extends Component {
   				console.error("Device has no PhotoEncodingMethod. We don't know how to handle this photo.");
   		}
     }, err =>  {
+        StatusBar.show();
       	console.error( err );
     }, {
 		// Some common settings are 20, 50, and 100
