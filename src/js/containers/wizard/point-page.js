@@ -7,9 +7,10 @@ import { CircularProgress } from 'material-ui';
 import { findIndex, bindAll, last, assign, omit } from 'lodash';
 import { bindActionCreators } from 'redux';
 
-import { loadPoint } from '../../reducers/points';
+import { loadPoint, publishPoints } from '../../reducers/points';
 import { setMapCenter } from '../../reducers/map';
 import { setDrawer } from '../../reducers/btc-drawer';
+
 
 import history from '../../history';
 import '../../../css/layout.css';
@@ -221,7 +222,7 @@ export default class PointPage extends Component {
   // moved the map around while choosing a location. We want to make sure the
   // map page is in the right place after the wizard is completed.
   onSubmit() {
-    const {pageActions} = this.props;
+    const {pageActions, isOnline } = this.props;
     const {point} = this.state;
     const onFinal = this.onFinal.bind( this );
     this.navAttempt = true;
@@ -243,6 +244,9 @@ export default class PointPage extends Component {
         this.navAttempt = false;
         onFinal();
       }
+    }
+    if ( isOnline ) {
+      pageActions.publishPoints();
     }
   }
 
@@ -318,7 +322,8 @@ export default class PointPage extends Component {
   // should extend this function when making their own `mapStateToProps`.
   static mapStateToProps( state ) {
     return {
-      points: state.points.points
+      points: state.points.points,
+      isOnline: state.network.isOnline
     };
   }
 
@@ -334,7 +339,8 @@ export default class PointPage extends Component {
     return {
       pageActions: bindActionCreators( {
         loadPoint: loadPoint,
-        setMapCenter: setMapCenter
+        setMapCenter: setMapCenter,
+        publishPoints: publishPoints
       }, dispatch ),
       wizardActions: bindActionCreators( {
         setDrawer: setDrawer

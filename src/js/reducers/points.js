@@ -50,7 +50,7 @@ export default function reducer( state = initState, action ) {
   let newState = cloneDeep( state );
   const idPath = 'points.' + action.id;
   switch ( action.type ) {
-  case REHYDRATE:
+  /*case REHYDRATE:
   	var incoming = action.payload.points;
   	if(incoming) {
 		// Clear the photo URLs; local ones are transient and only valid for the current page load;
@@ -58,6 +58,7 @@ export default function reducer( state = initState, action ) {
 		newState = {...newState, ...incoming, coverPhotoUrls: {}}
   	}
   	break;
+  	*/
   case UPDATE_SERVICE:
   case ADD_SERVICE:
   case ADD_ALERT:
@@ -380,7 +381,8 @@ export class ReplicationAgent extends Agent {
   select( state ) {
     return {
       isOnline: state.network.isOnline,
-      repIvalM: state.settings.repIvalM || 10
+      repIvalM: state.settings.repIvalM || 10,
+      updatedLength: state.points.publish.updated.length
     };
   }
 
@@ -393,11 +395,15 @@ export class ReplicationAgent extends Agent {
   }
 
   update() {
-    const {isOnline, repIvalM} = this.select( this.store.getState() );
-
+    const {isOnline, repIvalM, updatedLength} = this.select( this.store.getState() );
     clearTimeout( this.interval );
     if ( isOnline ) {
       this.store.dispatch( replicatePoints() );
+      console.log(updatedLength);  //issue: length is always 0
+      if ( updatedLength > 0) {
+        console.log("Publish");
+        this.store.dispatch( publishPoints() );
+      }
       this.interval = setInterval(
         ( ) => this.store.dispatch( replicatePoints() ),
         repIvalM * 60 * 1000
