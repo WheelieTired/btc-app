@@ -1,48 +1,56 @@
 
 /*
  * Both the body and html sections should fill the entire screen.
- */
-body, html {
-    height: 100%;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-}
-
-/*
- * The react app is rendered into the main div. It should fill the entire
+ * The React app is rendered into the main div. It should fill the entire
  * screen as well.
  */
-#main {
-    height: 100%;
-    width: 100%;
+body, html, #main {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
 }
 
 /*
- * The layout div contains the app bar and the rest of the page content.
- * It lays out both of those componenets with a columnar flexbox.
+ * This is the blue bar at the top of the screen.
+ */
+.navigation_bar {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+}
+
+/*
+ * This wraps all the content under the navigation bar.
  */
 .layout {
-    height: inherit;
-    width: inherit;
-    display: flex;
-    flex-direction: column;
+  position: absolute !important;
+  top: 64px;
+  left: 0;
+  right: 0;
 }
 
-.layout__header {
+/*
+ * This wraps all normal scrolling pages.
+ */
+.layout__section {
 
 }
 
 /*
- * The rest of the page content, besides the app bar. It should fill the
- * remaining space of the layour container.
+ * This is a replacement for layout__section on pages that need an inner flexbox.
  */
-.layout__section {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    align-items: stretch;
-    overflow-y: visible;
+.layout__section__fullflex {
+  position: fixed;
+  top: 64px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  align-content: flex-start;
 }
 
 h1, h2, h3, h4, h5, h6, div, span {

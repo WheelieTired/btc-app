@@ -105,7 +105,7 @@ export class SettingsPage extends Component {
 
     /*esfmt-ignore-start*/
     return (
-      <Page className="section__layout">
+      <Page className="layout__section">
         <Block style={ { padding: 0 } }>
           <List>
             { toggleItems }

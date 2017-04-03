@@ -1,5 +1,5 @@
 /*
- * The map is always absolutely positioned below everything taking up 100%
+ * The map is always fixed positioned below everything taking up 100%
  * of the screen. This way, the map center is always true no matter what
  * content might overlay the map.
  *
@@ -9,7 +9,7 @@
  *  - wizard-mode, in which we want to hide the zoom controls.
  */
 .map {
-    position: absolute;
+    position: fixed;
     height: 100%;
     width: 100%;
     top: 0;

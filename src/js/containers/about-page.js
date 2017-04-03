@@ -16,7 +16,7 @@ export class AboutPage extends Component {
 
   render() {
     return (
-		<Page className="section__layout">
+		<Page className="layout__section">
 			<Block style={ { padding: 0 } }>
 				<h2>Bicycle Touring Companion</h2>
 				<i>Version 1.0 (build 15)</i><br/>

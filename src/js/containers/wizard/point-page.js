@@ -306,8 +306,15 @@ export default class PointPage extends Component {
     const spinner = <CircularProgress size={ 2 } />;
     const content = this.isReady() ? wizardPageWithProps : spinner;
 
+    // This is a bad way to do this, but React is absurd.
+    // The map page is the only one that wants a flexbox.
+    var wrapperClass = 'layout__section';
+    if(wizardPage.type.name == "PointLocation") {
+      wrapperClass = 'layout__section__fullflex';
+    }
+
     return (
-      <div className='layout__section'>
+      <div className={ wrapperClass }>
         <Tabs value={ wizardPage.type }
           className='tabs-bar'>
           { tabs }

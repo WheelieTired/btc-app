@@ -34,7 +34,6 @@ class DownloadTrackPage extends Component {
   }
 
   render() {
-    const scrollStyle = {'overflow-y':'scroll'};
     const {tracks} = this.props;
 
     const downloaded = Object.keys( tracks ).reduce( ( pre, cur ) => {
@@ -103,10 +102,8 @@ class DownloadTrackPage extends Component {
 
     return (
       <Page className="layout__section">
-        <DeviceStorage downloaded={ downloaded } />
-        <div style={scrollStyle}>
-          { rows }
-        </div>
+		<DeviceStorage downloaded={ downloaded } />
+		{ rows }
       </Page>
       );
   }
