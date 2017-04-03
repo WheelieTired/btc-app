@@ -15,7 +15,7 @@ export class ViewPointCard extends PointCard {
 
   getCardAction() {
     return <FlatButton label="See Less"
-             onTouchTap={ this.navigate( 'peek-point' ) } />;
+    onTouchTap={ this.navigate( 'peek-point' ) } />;
   }
 
   getCardContent() {
@@ -74,10 +74,12 @@ export class ViewPointCard extends PointCard {
       if ( point.schedule && point.schedule.default && point.schedule.default[ 0 ] ) {
         timezone = '(' + point.schedule.default[ 0 ].timezone + ')';
       }
+      let averageRatings;
 
       content = (
         <div className="point-card__content">
           <CardText>
+            <span>{ this.getAverageStarRating( point.comments ) }</span>
             <span className="point-card__open-until">{ `${PointCard.openUntil( point )} ${timezone} — ` }</span>
             <span>{ point.description }</span>
           </CardText>
