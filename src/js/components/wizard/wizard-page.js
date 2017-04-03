@@ -179,14 +179,21 @@ export class WizardPage extends Component {
       );
   }
 
-  openPhotoPopover(event) {
-    // This prevents ghost click.
-    event.preventDefault();
+  clickPhotoButton(event) {
+    if(device.platform == "browser") {
+      // Go directly to library adding for browser.
+      this.onPhotoAddFromLibrary();
+    } else {
+      // Open the popover for iOS and Android apps.
 
-    this.setState({
-      popoverOpen: true,
-      popoverAnchorEl: event.currentTarget,
-    });
+      // This prevents ghost click.
+      event.preventDefault();
+
+      this.setState({
+        popoverOpen: true,
+        popoverAnchorEl: event.currentTarget,
+      });
+    }
   }
 
   closePhotoPopover() {
@@ -196,10 +203,10 @@ export class WizardPage extends Component {
   }
 
   getPhotoButton() {
-  	return (
+    return (
   		<div>
         <FlatButton
-          onTouchTap={this.openPhotoPopover.bind(this)}
+          onTouchTap={this.clickPhotoButton.bind(this)}
           label="Upload Photo"
         />
         <Popover
