@@ -77,6 +77,9 @@ class MapPage extends Component {
     }, {
       page: 'filter',
       icon: 'filter_list'
+    }, {
+      method: 'centerMap',
+      icon: 'my_location'
     } ];
     const props = {
       deselectMarker: MapPage.deselectMarker,

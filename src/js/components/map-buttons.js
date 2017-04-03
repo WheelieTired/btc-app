@@ -13,17 +13,32 @@ import history from '../history';
 export class MapButtons extends Component {
   render() {
     const buttons = this.props.buttons.map( ( button, index ) => {
-      return (
-        <FloatingActionButton key={ button.page }
-          mini={ true }
-          className="mapButtons"
-          style={ { position: 'fixed', top: `${82 + 55 * index}px`, right: '10px' } }
-          onTouchTap={ ( ) => history.push( button.page ) }>
-          <FontIcon className="material-icons">
-            { button.icon }
-          </FontIcon>
-        </FloatingActionButton>
+      if ( button.method != null) { //TODO: Do this a better way, rather than reloading the page.
+        return (
+          <FloatingActionButton key={ button.method }
+            mini={ true }
+            className="mapButtons"
+            style={ { position: 'fixed', top: `${82 + 55 * index}px`, right: '10px' } }
+            onTouchTap={ ( ) => window.location.reload() }>
+            <FontIcon className="material-icons">
+              { button.icon }
+            </FontIcon>
+          </FloatingActionButton>
         );
+      }
+      else {
+        return (
+          <FloatingActionButton key={ button.page }
+            mini={ true }
+            className="mapButtons"
+            style={ { position: 'fixed', top: `${82 + 55 * index}px`, right: '10px' } }
+            onTouchTap={ ( ) => history.push( button.page ) }>
+            <FontIcon className="material-icons">
+              { button.icon }
+            </FontIcon>
+          </FloatingActionButton>
+        );
+      }
     } );
     return (
       <span>{ buttons }</span>
