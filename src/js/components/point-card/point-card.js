@@ -1,10 +1,11 @@
 /*eslint-disable no-unused-vars*/
 import React, { Component } from 'react';
-import { Card, CardActions, CardText, FlatButton, CardMedia, CardTitle, CardHeader, IconButton, IconMenu, MenuItem, CircularProgress } from 'material-ui';
+import { Card, CardActions, CardText, FlatButton, CardMedia, CardTitle, CardHeader, IconButton, IconMenu, MenuItem, CircularProgress, ListItem } from 'material-ui';
 import LocationIcon from 'material-ui/svg-icons/maps/place';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import { setSnackbar } from '../../reducers/notifications';
 
+import RatingSelector from '../rating-selector';
 /*eslint-enable no-unused-vars*/
 
 import { Point, Schedule, display } from 'btc-models';
@@ -113,6 +114,50 @@ static expiresOn( alert ) {
     return 'No expiration date added '
   }
 }
+
+/* This method will calculate the average start ratings */
+getAverageStarRating(comments){
+    let numberOfPeopleRating = comments.length;
+    var totalStars = 0;
+
+    if(numberOfPeopleRating == 0) {
+		return (
+			<ListItem 
+				onTouchTap={ this.navigate( 'rate-point' )}
+				primaryText={ "Be the first to rate!"} />
+		); // EARLY RETURN (not yet rated)
+    }
+
+    //loop over the comments to get the length of the array (aka how mant ratings are there).
+    for (var i = 0; i < comments.length; i++) {
+      // add the total stars
+      totalStars += comments[i].rating;
+    }
+
+    var averageStars = 0;
+    //calculating the average star ratings. 
+    averageStars = (totalStars*1.0)/numberOfPeopleRating;
+    //Round to get the nearest int
+    averageStars = Math.round(averageStars);
+   
+
+    const style = { fontSize: '16px' };
+      const average = (
+      <RatingSelector disabled
+        rating={ averageStars }
+        style={ style } />
+      );
+
+    return (
+    <ListItem 
+      onTouchTap={ this.navigate( 'rate-point' )}
+      primaryText={ "Average Rating"}
+      secondaryText={ (
+        <span>{ average }</span>
+      ) } />
+    );
+
+  }
 
   // Get an english list of available amenities
   static amenities( service ) {

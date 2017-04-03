@@ -179,14 +179,21 @@ export class WizardPage extends Component {
       );
   }
 
-  openPhotoPopover(event) {
-    // This prevents ghost click.
-    event.preventDefault();
+  clickPhotoButton(event) {
+    if(device.platform == "browser") {
+      // Go directly to library adding for browser.
+      this.onPhotoAddFromLibrary();
+    } else {
+      // Open the popover for iOS and Android apps.
 
-    this.setState({
-      popoverOpen: true,
-      popoverAnchorEl: event.currentTarget,
-    });
+      // This prevents ghost click.
+      event.preventDefault();
+
+      this.setState({
+        popoverOpen: true,
+        popoverAnchorEl: event.currentTarget,
+      });
+    }
   }
 
   closePhotoPopover() {
@@ -196,10 +203,10 @@ export class WizardPage extends Component {
   }
 
   getPhotoButton() {
-  	return (
+    return (
   		<div>
         <FlatButton
-          onTouchTap={this.openPhotoPopover.bind(this)}
+          onTouchTap={this.clickPhotoButton.bind(this)}
           label="Upload Photo"
         />
         <Popover
@@ -226,83 +233,111 @@ export class WizardPage extends Component {
   	this.onPhotoAdd(Camera.PictureSourceType.PHOTOLIBRARY);
   }
 
+  // Uses the Cordova file reading plugin to work around WKWebView
+  // security limitations on iOS by loading photos natively.
+  getLocalFileAsURL(path, successFunction) {
+    window.resolveLocalFileSystemURL(path, function(fileSystem) {
+      fileSystem.file(function(file) {
+        
+        var fileReader = new FileReader();
+        
+        fileReader.onload = function(e) {
+          var blob = new Blob([e.target.result]);
+          var url = URL.createObjectURL(blob);
+          successFunction(url);
+        };
+
+        fileReader.readAsArrayBuffer(file);
+
+      });
+    });
+  }
+
   // There is a bug in capturing a photo from the browser:
   // [CB-9852](https://issues.apache.org/jira/browse/CB-9852)
   onPhotoAdd(mySourceType) {
+    // Close the popover now that they selected a source.
+    this.setState({ popoverOpen: false });
+
+    // Work around WKWebView being too big on iOS after using this plugin.
+    // We show the bar again in both the success and error cases.
+    StatusBar.hide();
+
     navigator.camera.getPicture( photo => {
+      StatusBar.show();
 
-      let promise;
-      const device = Device.getDevice();
-      switch ( device.getPhotoEncodingMethod() ) {
-      case PhotoEncodingMethods.ImgSrc:
-        promise = imgSrcToBlob( photo );
-        break;
-      case PhotoEncodingMethods.Base64String:
-        promise = base64StringToBlob( photo );
-        break;
-      case PhotoEncodingMethods.None:
-      default:
-        promise = null;
-      }
-      if ( promise ) {
-        promise.then( theBlob => {
-          let loadedCoverBlob = document.createElement('img');
-          loadedCoverBlob.src = URL.createObjectURL(theBlob);
+  		let loadedCoverImage = document.createElement('img');
+  		// Need to wait for loadedCoverImage to load and then keep working
+  		loadedCoverImage.onload = event => {
 
-          // Need to wait for loadedCoverBlob to load and then keep working
-          loadedCoverBlob.onload = event => {
-            //Shrink the theBlob which was photo but now is a blob
-            let MAX_WIDTH = 800;
-            let MAX_HEIGHT = 600;
+  			//Shrink the theBlob which was photo but now is a blob
+  			let MAX_WIDTH = 800;
+  			let MAX_HEIGHT = 600;
 
-            var newWidth = loadedCoverBlob.width;
-            var newHeight = loadedCoverBlob.height;
+  			var newWidth = loadedCoverImage.width;
+  			var newHeight = loadedCoverImage.height;
 
-            if (newWidth > newHeight) {
-                if (newWidth > MAX_WIDTH) {
-                   newHeight *= MAX_WIDTH / newWidth;
-                   newWidth = MAX_WIDTH;
-                }
-            } else {
-                if (newHeight > MAX_HEIGHT) {
-                   newWidth *= MAX_HEIGHT / newHeight;
-                   newHeight = MAX_HEIGHT;
-                }
-            }
+  			if (newWidth > newHeight) {
+  			    if (newWidth > MAX_WIDTH) {
+  			       newHeight *= MAX_WIDTH / newWidth;
+  			       newWidth = MAX_WIDTH;
+  			    }
+  			} else {
+  			    if (newHeight > MAX_HEIGHT) {
+  			       newWidth *= MAX_HEIGHT / newHeight;
+  			       newHeight = MAX_HEIGHT;
+  			    }
+  			}
 
-            let canvas = document.createElement('canvas');
-            canvas.width = newWidth;
-            canvas.height = newHeight;
+  			let canvas = document.createElement('canvas');
+  			canvas.width = newWidth;
+  			canvas.height = newHeight;
 
-            let context = canvas.getContext('2d');
-            context.drawImage(loadedCoverBlob, 0, 0, newWidth, newHeight);
-            let resizedDataUrl = canvas.toDataURL('image/jpeg');
+  			let context = canvas.getContext('2d');
+  			context.drawImage(loadedCoverImage, 0, 0, newWidth, newHeight);
+  			let resizedDataUrl = canvas.toDataURL('image/jpeg');
 
-            let resizedCoverBlob = dataURLToBlob(resizedDataUrl);
+  			let resizedCoverBlob = dataURLToBlob(resizedDataUrl);
 
-            this.props.wizardActions.setSnackbar({ message: 'Successfully uploaded photo' });
+  			this.props.wizardActions.setSnackbar({ message: 'Successfully uploaded photo' });
 
-            resizedCoverBlob.then(coverBlob => {
-            this.setState( { coverBlob } );
-            
-
+  			resizedCoverBlob.then(coverBlob => {
+  				this.setState( { coverBlob } );
   			});
-          };
+  		};
 
-        });
-      }
+  		// This will load the photo into the loadedCoverImage element,
+  		// which will trigger the above onload callback to finish
+  		// processing and attaching the image.
+  		const device = Device.getDevice();
+  		switch ( device.getPhotoEncodingMethod() ) {
+  			case PhotoEncodingMethods.ImgSrc:
+  				this.getLocalFileAsURL(photo, function(theURL){
+  					loadedCoverImage.src = theURL;
+  				});
+  			break;
+  			case PhotoEncodingMethods.Base64String:
+  				base64StringToBlob( photo ).then( theBlob => {
+  					loadedCoverImage.src = URL.createObjectURL(theBlob);
+  				});
+  			break;
+  			case PhotoEncodingMethods.None:
+  			default:
+  				console.error("Device has no PhotoEncodingMethod. We don't know how to handle this photo.");
+  		}
     }, err =>  {
+        StatusBar.show();
       	console.error( err );
-    },{
-      // Some common settings are 20, 50, and 100
-      quality: 100,     /* Camera.. */
-      destinationType: Camera.DestinationType.FILE_URI,
-      sourceType: mySourceType,
-      encodingType: Camera.EncodingType.JPG,
-      mediaType: Camera.MediaType.PICTURE,
-      correctOrientation: true, //Corrects Android orientation quirks
-      cameraDirection: Camera.Direction.BACK
-    } );
+    }, {
+		// Some common settings are 20, 50, and 100
+		quality: 100,     /* Camera.. */
+		destinationType: Camera.DestinationType.FILE_URI,
+		sourceType: mySourceType,
+		encodingType: Camera.EncodingType.JPG,
+		mediaType: Camera.MediaType.PICTURE,
+		correctOrientation: true, //Corrects Android orientation quirks
+		cameraDirection: Camera.Direction.BACK
+    });
   }
 }
 

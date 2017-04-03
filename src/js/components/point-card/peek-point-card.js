@@ -14,7 +14,7 @@ export class PeekPointCard extends PointCard {
 
   getCardAction() {
     return <FlatButton label="See More"
-             onTouchTap={ this.navigate( 'view-point' ) } />;
+    onTouchTap={ this.navigate( 'view-point' ) } />;
   }
 
   getCardContent() {
@@ -29,11 +29,16 @@ export class PeekPointCard extends PointCard {
     }
 
     let openUntil;
+    let averageRatings;
+
     if ( type === 'service' ) {
+      averageRatings = (<span>{ this.getAverageStarRating( point.comments ) }</span>
+      );
       openUntil = (
         <span className="point-card__open-until">{ `${PointCard.openUntil( point )} ${timezone} — ` }</span>
       );
     }
+
     let expiresOn;
     if( type === 'alert'){
       expiresOn = (<span className="point-card__expires-on">{`${PointCard.expiresOn( point )}`}</span>
@@ -41,6 +46,7 @@ export class PeekPointCard extends PointCard {
     }
     return (
       <CardText className="point-card__description">
+        { averageRatings }
         { openUntil }
         <span>{ point.description }</span>
         <br/>

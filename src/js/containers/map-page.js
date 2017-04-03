@@ -77,13 +77,16 @@ class MapPage extends Component {
     }, {
       page: 'filter',
       icon: 'filter_list'
+    }, {
+      method: 'centerMap',
+      icon: 'my_location'
     } ];
     const props = {
       deselectMarker: MapPage.deselectMarker,
       selectMarker: point => MapPage.navigateWithId( 'peek-point', point )
     };
     return (
-      <div className="layout__section">
+      <div className="layout__section__fullflex">
         <ConnectedPointMap className="map map--browse-mode"
           { ...props } />
         <MapButtons buttons={ buttons }

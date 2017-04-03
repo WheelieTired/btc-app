@@ -7,7 +7,7 @@ import { CircularProgress } from 'material-ui';
 import { findIndex, bindAll, last, assign, omit } from 'lodash';
 import { bindActionCreators } from 'redux';
 
-import { loadPoint } from '../../reducers/points';
+import { loadPoint, publishPoints } from '../../reducers/points';
 import { setMapCenter } from '../../reducers/map';
 import { setDrawer } from '../../reducers/btc-drawer';
 import { setSnackbar } from '../../reducers/notifications/snackbar';
@@ -222,7 +222,7 @@ export default class PointPage extends Component {
   // moved the map around while choosing a location. We want to make sure the
   // map page is in the right place after the wizard is completed.
   onSubmit() {
-    const {pageActions} = this.props;
+    const {pageActions, isOnline } = this.props;
     const {point} = this.state;
     const onFinal = this.onFinal.bind( this );
     this.navAttempt = true;
@@ -237,12 +237,18 @@ export default class PointPage extends Component {
         if ( this.isTabValid() ) {
           this.navAttempt = false;
           onFinal();
+          if ( isOnline ) {
+            pageActions.publishPoints();
+          }
         }
       } );
     } else {
       if ( this.isPointValid().valid ) {
         this.navAttempt = false;
         onFinal();
+        if ( isOnline ) {
+          pageActions.publishPoints();
+        }
       }
     }
   }
@@ -300,8 +306,15 @@ export default class PointPage extends Component {
     const spinner = <CircularProgress size={ 2 } />;
     const content = this.isReady() ? wizardPageWithProps : spinner;
 
+    // This is a bad way to do this, but React is absurd.
+    // The map page is the only one that wants a flexbox.
+    var wrapperClass = 'layout__section';
+    if(wizardPage.type.name == "PointLocation") {
+      wrapperClass = 'layout__section__fullflex';
+    }
+
     return (
-      <div className='layout__section'>
+      <div className={ wrapperClass }>
         <Tabs value={ wizardPage.type }
           className='tabs-bar'>
           { tabs }
@@ -319,7 +332,8 @@ export default class PointPage extends Component {
   // should extend this function when making their own `mapStateToProps`.
   static mapStateToProps( state ) {
     return {
-      points: state.points.points
+      points: state.points.points,
+      isOnline: state.network.isOnline
     };
   }
 
@@ -335,7 +349,8 @@ export default class PointPage extends Component {
     return {
       pageActions: bindActionCreators( {
         loadPoint: loadPoint,
-        setMapCenter: setMapCenter
+        setMapCenter: setMapCenter,
+        publishPoints: publishPoints
       }, dispatch ),
       wizardActions: bindActionCreators( {
         setDrawer: setDrawer,
