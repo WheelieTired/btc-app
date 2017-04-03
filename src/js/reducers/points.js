@@ -391,7 +391,8 @@ export class ReplicationAgent extends Agent {
   constructor( store ) {
     super( store );
     this.store = store;
-    this.interval = false;
+    this.publishInterval = false;
+    this.replicationInterval = false;
 
     bindAll( this, 'update' );
   }
@@ -399,7 +400,9 @@ export class ReplicationAgent extends Agent {
   select( state ) {
     return {
       isOnline: state.network.isOnline,
-      repIvalM: state.settings.repIvalM || 10
+      repIvalM: state.settings.repIvalM || 10,
+      login: state.account.login,
+      updatedLength: state.points.publish.updated.length
     };
   }
 
@@ -412,15 +415,22 @@ export class ReplicationAgent extends Agent {
   }
 
   update() {
-    const {isOnline, repIvalM} = this.select( this.store.getState() );
-
-    clearTimeout( this.interval );
+    const {isOnline, repIvalM, login, updatedLength} = this.select( this.store.getState() );
+    clearTimeout( this.replicationInterval );
     if ( isOnline ) {
       this.store.dispatch( replicatePoints() );
-      this.interval = setInterval(
+      this.replicationInterval = setInterval(
         ( ) => this.store.dispatch( replicatePoints() ),
         repIvalM * 60 * 1000
       );
+    }
+    clearTimeout( this.publishInterval );
+    if ( isOnline && login.loggedIn && updatedLength > 0) {
+      this.store.dispatch( publishPoints() );
+      this.publishInterval = setInterval(
+        ( ) => this.store.dispatch( publishPoints() ),
+        5 * 1000 // TODO: FIX ME
+       );
     }
   }
 }
