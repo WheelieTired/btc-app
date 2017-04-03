@@ -120,6 +120,14 @@ getAverageStarRating(comments){
     let numberOfPeopleRating = comments.length;
     var totalStars = 0;
 
+    if(numberOfPeopleRating == 0) {
+		return (
+			<ListItem 
+				onTouchTap={ this.navigate( 'rate-point' )}
+				primaryText={ "Be the first to rate!"} />
+		); // EARLY RETURN (not yet rated)
+    }
+
     //loop over the comments to get the length of the array (aka how mant ratings are there).
     for (var i = 0; i < comments.length; i++) {
       // add the total stars
@@ -143,7 +151,7 @@ getAverageStarRating(comments){
     return (
     <ListItem 
       onTouchTap={ this.navigate( 'rate-point' )}
-      primaryText={ "Average Ratings"}
+      primaryText={ "Average Rating"}
       secondaryText={ (
         <span>{ average }</span>
       ) } />
