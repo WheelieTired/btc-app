@@ -429,7 +429,7 @@ export class ReplicationAgent extends Agent {
       this.store.dispatch( publishPoints() );
       this.publishInterval = setInterval(
         ( ) => this.store.dispatch( publishPoints() ),
-        5 * 1000 // TODO: FIX ME
+        repIvalM * 60 * 1000
        );
     }
   }
