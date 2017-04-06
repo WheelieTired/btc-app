@@ -29,9 +29,8 @@
  * The card is absolutely positioned over the map, anchored to the bottom.
  * Since the margins are auto, the card will be centered.
  *
- * In peek mode, we hide overflow. The user can expand the card to view the
- * rest of the details. Height is limited to 65% so you can get a good view
- * of the picture and the description, and still see the map behind the card.
+ * Height is limited to 65% so you can get a good view of the picture and
+ * the description, and still see the map behind the card.
  *
  * The card is not a flexbox in peek mode!
  */
@@ -42,7 +41,6 @@
     bottom: 0;
     left: 0;
     right: 0;
-    overflow-y: hidden;
 }
 
 /*
@@ -136,7 +134,8 @@
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    overflow-y: auto;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
 }
 
 /*
@@ -148,8 +147,8 @@
 .point-card__media {
     width: inherit;
     flex-basis: 225px;
-    flex-grow: auto;
-    flex-shrink: auto;
+    flex-grow: 0;
+    flex-shrink: 0;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -176,9 +175,8 @@
  * has the point-card__content style.
  */
 .point-card__description {
-    flex-grow: 1;
-    flex-shrink: 1;
-    overflow-y: hidden;
+    flex-grow: 0;
+    flex-shrink: 0;
 }
 
 .point-card__open-until {
