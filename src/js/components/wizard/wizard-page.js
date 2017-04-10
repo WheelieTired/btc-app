@@ -205,7 +205,7 @@ export class WizardPage extends Component {
   getPhotoButton() {
     return (
   		<div>
-        <FlatButton
+        <RaisedButton
           onTouchTap={this.clickPhotoButton.bind(this)}
           label="Upload Photo"
         />
@@ -221,6 +221,7 @@ export class WizardPage extends Component {
             <MenuItem onTouchTap={ this.onPhotoAddFromLibrary.bind(this) } primaryText="Library" />
           </Menu>
         </Popover>
+        &nbsp;&nbsp;
       </div>
   	);
   }

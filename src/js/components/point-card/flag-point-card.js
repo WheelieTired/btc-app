@@ -1,6 +1,6 @@
 /*eslint-disable no-unused-vars*/
 import React from 'react';
-import { Card, CardActions, CardText, FlatButton, Paper, TextField, List, ListItem } from 'material-ui';
+import { Card, CardActions, CardText, RaisedButton, RasiedButton, FlatButton, Paper, TextField, List, ListItem } from 'material-ui';
 
 import PointCard from './point-card';
 import { FormBlock } from '../block';
@@ -29,7 +29,9 @@ export class FlagPointCard extends PointCard {
 
   getCardAction() {
     const goBack = history.goBack.bind( history );
-    return <FlatButton label="Go Back"
+    return <RaisedButton 
+             Default 
+             label="Go Back"
              onTouchTap={ goBack } />;
   }
 

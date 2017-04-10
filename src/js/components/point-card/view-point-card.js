@@ -1,6 +1,6 @@
 /*eslint-disable no-unused-vars*/
 import React, { Component } from 'react';
-import { CardText, FlatButton } from 'material-ui';
+import { CardText, RaisedButton, FlatButton } from 'material-ui';
 
 import PointCard from './point-card';
 import HoursTable from '../hours-table';
@@ -14,7 +14,7 @@ export class ViewPointCard extends PointCard {
   }
 
   getCardAction() {
-    return <FlatButton label="See Less"
+    return <RaisedButton label="See Less"
     onTouchTap={ this.navigate( 'peek-point' ) } />;
   }
 

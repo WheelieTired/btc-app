@@ -1,6 +1,6 @@
 /*eslint-disable no-unused-vars*/
 import React, { Component } from 'react';
-import { Card, CardActions, CardText, FlatButton, CardMedia, CardTitle, CardHeader, IconButton, IconMenu, MenuItem, CircularProgress, ListItem } from 'material-ui';
+import { Card, CardActions, CardText, FlatButton, RaisedButton, CardMedia, CardTitle, CardHeader, IconButton, IconMenu, MenuItem, CircularProgress, ListItem } from 'material-ui';
 import LocationIcon from 'material-ui/svg-icons/maps/place';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import { setSnackbar } from '../../reducers/notifications';
@@ -122,9 +122,11 @@ getAverageStarRating(comments){
 
     if(numberOfPeopleRating == 0) {
 		return (
-			<ListItem 
+			<div><RaisedButton 
 				onTouchTap={ this.navigate( 'rate-point' )}
-				primaryText={ "Be the first to rate!"} />
+        label="Be the first to rate this point!"/><br/><br/><br/></div>
+
+				//primaryText={ "Be the first to rate!"} /></div>
 		); // EARLY RETURN (not yet rated)
     }
 
@@ -142,19 +144,19 @@ getAverageStarRating(comments){
    
 
     const style = { fontSize: '16px' };
-      const average = (
+    const average = (
       <RatingSelector disabled
         rating={ averageStars }
         style={ style } />
       );
 
     return (
-    <ListItem 
+    <div><RaisedButton
       onTouchTap={ this.navigate( 'rate-point' )}
-      primaryText={ "Average Rating"}
-      secondaryText={ (
-        <span>{ average }</span>
-      ) } />
+      label="View Ratings"
+      labelPosition="before">
+      {average}&nbsp;&nbsp;&nbsp;&nbsp;
+      </RaisedButton><br/><br/><br/></div>
     );
 
   }
@@ -266,7 +268,7 @@ getAverageStarRating(comments){
         </div>
         <CardActions className="point-card__actions">
           { this.getCardAction() }
-          <FlatButton label="Close"
+          <RaisedButton label="Close"
             onTouchTap={ deselectMarker } />
         </CardActions>
       </Card>

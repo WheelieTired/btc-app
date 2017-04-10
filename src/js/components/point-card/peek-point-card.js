@@ -1,6 +1,6 @@
 /*eslint-disable no-unused-vars*/
 import React from 'react';
-import { CardText, FlatButton } from 'material-ui';
+import { CardText, RaisedButton, FlatButton } from 'material-ui';
 
 import PointCard from './point-card';
 /*eslint-enable no-unused-vars*/
@@ -13,7 +13,7 @@ export class PeekPointCard extends PointCard {
   }
 
   getCardAction() {
-    return <FlatButton label="See More"
+    return <RaisedButton label="See More"
     onTouchTap={ this.navigate( 'view-point' ) } />;
   }
 
