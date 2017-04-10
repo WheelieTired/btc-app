@@ -151,7 +151,6 @@ export class FormBlock extends Component {
     }
 
     /*eslint-disable no-unused-vars*/
-    const ButtonClass = thinActionButton ? FlatButton : RaisedButton;
     let actionProps = {};
     if ( !this.props.thinActionButton ) {
       actionProps.fullWidth = true;
@@ -164,7 +163,7 @@ export class FormBlock extends Component {
       <Block { ...props }>
         { this.boxes() }
         <div className='entry__spacer' />
-        <ButtonClass { ...actionProps }
+        <RaisedButton { ...actionProps }
           className='entry__action'
           onTouchTap={ this.onAction }
           label={ this.props.actionText } />
