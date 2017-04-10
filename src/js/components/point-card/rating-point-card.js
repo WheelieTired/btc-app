@@ -117,7 +117,7 @@ export class RatingPointCard extends PointCard {
       <FormBlock onAction={ this.onComment }
         thinActionButton
         zDepth={ 0 }
-        actionText="Comment"
+        actionText="Submit"
         fields={ fields }
         problemText={ this.errorMessage } />
       );
