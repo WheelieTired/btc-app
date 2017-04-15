@@ -41,15 +41,29 @@ export class BtcDrawer extends Component {
       icon: 'map'
     }, {
       divider: true
-    }, {
-      link: 'add-service',
-      title: 'Add Service',
-      icon: 'add_location'
-    }, {
-      link: 'add-alert',
-      title: 'Add Alert',
-      icon: 'warning'
-    }, {
+    }];
+    if ( login.loggedIn ) {
+      pages.push( {
+        link: 'add-service',
+        title: 'Add Service',
+        icon: 'add_location'
+      }, {
+        link: 'add-alert',
+        title: 'Add Alert',
+        icon: 'warning'
+      } );
+    } else {
+      pages.push( {
+        link: 'login',
+        title: 'Add Service',
+        icon: 'add_location'
+      }, {
+        link: 'login',
+        title: 'Add Alert',
+        icon: 'warning'
+      } );
+    }
+    pages.push( {
       link: 'publish',
       title: 'Publish',
       icon: 'cloud_upload',
@@ -70,8 +84,7 @@ export class BtcDrawer extends Component {
       icon: 'info'
     }, {
       divider: true
-    }];
-
+    });
     if ( login.loggedIn ) {
       pages.push( {
         link: 'logout',
@@ -109,7 +122,7 @@ export class BtcDrawer extends Component {
     } );
 
     return (
-      <AppBar className="navigation_bar" 
+      <AppBar className="navigation_bar"
       title={ this.props.drawer }
               onLeftIconButtonTouchTap={ this.showNav }>
         <Drawer docked={ false }
