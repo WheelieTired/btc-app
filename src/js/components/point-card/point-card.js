@@ -11,6 +11,7 @@ import RatingSelector from '../rating-selector';
 import { Point, Schedule, display } from 'btc-models';
 import '../../../css/point-card.css';
 
+import history from '../../history';
 import { isEmpty } from 'lodash';
 
 // The PointCard is the base class for all the states of a point card. These
@@ -59,7 +60,7 @@ export class PointCard extends Component {
   // method, but `loadPoint` synchronously puts some default data into
   // points[ params.id ] that we need *before* render.
   componentDidMount() {
-    const {params, points, loadPoint, getCoverPhotoURLForPointId} = this.props;
+    const {params, points, login, loadPoint, getCoverPhotoURLForPointId} = this.props;
     loadPoint( params.id );
     this.point = points[ params.id ];
     getCoverPhotoURLForPointId( params.id );
@@ -69,7 +70,7 @@ export class PointCard extends Component {
   // See componentDidMount. As we are potentially getting a new id to display
   // from the router, we need to load the point for that id.
   componentWillReceiveProps( nextProps ) {
-    const {params, points, loadPoint, getCoverPhotoURLForPointId} = nextProps;
+    const {params, points, login, loadPoint, getCoverPhotoURLForPointId} = nextProps;
     loadPoint( params.id );
     this.point = points[ params.id ];
     getCoverPhotoURLForPointId( params.id );
@@ -81,6 +82,10 @@ export class PointCard extends Component {
     const {navigateWithId} = this.props;
     const point = this.point;
     return ( ) => navigateWithId( prefix, point );
+  }
+
+  navigateNoId( prefix ) {
+    return ( ) => history.push( prefix );
   }
 
   static openUntil( service ) {
@@ -122,7 +127,7 @@ getAverageStarRating(comments){
 
     if(numberOfPeopleRating == 0) {
 		return (
-			<div><RaisedButton 
+			<div><RaisedButton
 				onTouchTap={ this.navigate( 'rate-point' )}
         label="Be the first to rate this point!"/><br/><br/><br/></div>
 
@@ -137,11 +142,11 @@ getAverageStarRating(comments){
     }
 
     var averageStars = 0;
-    //calculating the average star ratings. 
+    //calculating the average star ratings.
     averageStars = (totalStars*1.0)/numberOfPeopleRating;
     //Round to get the nearest int
     averageStars = Math.round(averageStars);
-   
+
 
     const style = { fontSize: '16px' };
     const average = (
@@ -197,20 +202,34 @@ getAverageStarRating(comments){
 
 
     if ( type === 'service' ) {
-      update = (
-        <MenuItem primaryText='Update Information'
-          onTouchTap={ this.navigate( 'loading' ) } />
-      );
-      rate = (
-        <MenuItem primaryText='Rate Service'
-          onTouchTap={ this.navigate( 'rate-point' ) } />
-      );
+      if (this.props.login.loggedIn == true) {
+        update = (
+          <MenuItem primaryText='Update Information'
+            onTouchTap={ this.navigate( 'loading' ) } />
+        );
+        rate = (
+          <MenuItem primaryText='Rate Service'
+            onTouchTap={ this.navigate( 'rate-point' ) } />
+        );
+        flag = (
+          <MenuItem primaryText='Flag'
+            onTouchTap={ this.navigate( 'flag-point' ) } />
+        );
+      } else {
+        update = (
+          <MenuItem primaryText='Update Information'
+            onTouchTap={ this.navigateNoId( 'login' ) } />
+        );
+        rate = (
+          <MenuItem primaryText='Rate Service'
+            onTouchTap={ this.navigateNoId( 'login' ) } />
+        );
+        flag = (
+          <MenuItem primaryText='Flag'
+            onTouchTap={ this.navigateNoId( 'login' ) } />
+        );
+      }
     }
-
-      flag = (
-      <MenuItem primaryText='Flag'
-          onTouchTap={ this.navigate( 'flag-point' ) } />
-      );
 
     const button = (
     <IconButton>
