@@ -26,7 +26,7 @@ export class RatingPointCard extends PointCard {
 
   getCardAction() {
     const goBack = history.goBack.bind( history );
-    return <RaisedButton 
+    return <RaisedButton
              label="Go Back"
              onTouchTap={ goBack } />;
   }
@@ -82,20 +82,23 @@ export class RatingPointCard extends PointCard {
       rating: values.rating,
       uuid: uuid.v1()
     };
-    
-    var newPoint = cloneDeep(this.point);
-    newPoint.comments.push(comment);
-    
-    const service = new Service( newPoint );
-    service.update();
-    if (service.isValid()) {
-      this.errorMessage = "";
-      updateService(service);
-    }
-    else {
-      this.errorMessage = "Enter a comment between 1 and 140 characters and select a rating between 1 and 5 stars.";
-      // Re-render to show the error message.
-      this.forceUpdate();
+    if (this.props.login.loggedIn == true) {
+      var newPoint = cloneDeep(this.point);
+      newPoint.comments.push(comment);
+
+      const service = new Service( newPoint );
+      service.update();
+      if (service.isValid()) {
+        this.errorMessage = "";
+        updateService(service);
+      }
+      else {
+        this.errorMessage = "Enter a comment between 1 and 140 characters and select a rating between 1 and 5 stars.";
+        // Re-render to show the error message.
+        this.forceUpdate();
+      }
+    } else {
+      history.push('login')
     }
   }
 
