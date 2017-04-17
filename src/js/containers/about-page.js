@@ -19,7 +19,7 @@ export class AboutPage extends Component {
 		<Page className="layout__section">
 			<Block style={ { padding: 0 } }>
 				<h2>Bicycle Touring Companion</h2>
-				<i>Version 1.0 (build 17)</i><br/>
+				<i>Version 1.0 (build 18)</i><br/>
 				&copy; 2015 - 2017 Adventure Cycling Association<br/><br/>
 				Maps &copy; Thunderforest, Data &copy; OpenStreetMap contributors.<br/><br/>
 				TODO: Other software and data acknowledgements go here.
