@@ -9,24 +9,40 @@ Have [npm](https://www.npmjs.com) installed on your development machine (availab
 ### Running on Android
 *Minimum SDK 19 (Android 4.4)*
 
-1. Install [Android Studio](https://developer.android.com/studio/index.html) (required for having the resources to deploy to a phone)
+1. Install [Android Studio](https://developer.android.com/studio/index.html)   
+
+#### Simulator
+2. `npm run start:android-sim` (this build will respect your NODE_ENV for selecting the servers, localhost by default)
+3. You can inspect the Android view by going to `chrome://inspect`
+4. Repeat from step 2 to build again  
+
+#### Device
 2. Make sure your device shows up on `adb devices`
-3. `npm run start:android` (You only need to do this after the first run)
-4. You can inspect the Android view by going to `chrome://inspect`!  
+3. `npm run start:android-device` (this build will point to AWS)
+4. You can inspect the Android view by going to `chrome://inspect`
+5. Repeat from step 3 to build again  
 
 ## iOS
 ### Running on iOS
 *Minimum iOS 9.0*  
 
-1. Install [Xcode](https://developer.apple.com/xcode/)
+1. Install [Xcode](https://developer.apple.com/xcode/) on your Mac  
+
+#### Simulator
+2. `npm run start:ios-sim` (this build will respect your NODE_ENV for selecting the servers, localhost by default)
+3. You can inspect the iOS view by using Safari remote debugging on your Mac 
+4. Repeat from step 2 to build again  
+
+#### Device
 2. Open platforms/iOS/BTC.xcodeproj  
 3. Set the project to use your code signing credentials  
-4. `npm run start:ios-device` (You only need to do this after the first run)
-5. You can inspect the iOS view by using Safari remote debugging on your Mac  
+4. `npm run start:ios-device` (this build will point to AWS)
+5. You can inspect the iOS view by using Safari remote debugging on your Mac 
+6. Repeat from step 4 to build again  
 
 ## Browser
 ### Developing in Browser
-1. `npm run dev`
+1. `npm run dev` (this build will respect your NODE_ENV for selecting the servers, localhost by default)
 2. Open `http://localhost:8000/browser/www/`
 3. The Chrome extension _LiveReload_ your browser session will reload when you update a file.  (not required, but nice)
 
