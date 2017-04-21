@@ -30,6 +30,10 @@ export class OnboardingPage extends Component {
       };
   }
 
+  componentDidMount() {
+    this.props.setDrawer( '' );
+  }
+
   handlePageChange(pageNumber) {
     //console.log(`active page is ${pageNumber}`);
     this.setState({activePage: pageNumber, text: this.onboardingText[pageNumber-1]});
