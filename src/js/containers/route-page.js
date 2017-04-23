@@ -1,21 +1,25 @@
 /*eslint-disable no-unused-vars*/
 import React, { Component } from 'react';
-import { RaisedButton, FontIcon, Card, CardMedia, CardTitle, CardActions, CardText, LinearProgress } from 'material-ui';
+import { RaisedButton, FontIcon, Card, CardHeader, CardMedia, CardTitle, CardActions, CardText, LinearProgress } from 'material-ui';
 import DeviceStorage from '../components/device-storage';
 import { Page } from '../components/page';
 /*eslint-enable no-unused-vars*/
 
 import { connect } from 'react-redux';
 import { isFinite } from 'underscore';
+import history from '../history';
 
 import { setDrawer } from '../reducers/btc-drawer';
 import { fetchTrack, clearTrack, activateTrack, deactivateTrack } from '../reducers/tracks';
+import { setMapZoom, setMapCenter, setFitBoundingBox } from '../reducers/map';
 
-class DownloadTrackPage extends Component {
+
+
+class RoutePage extends Component {
   componentDidMount() {
-    this.props.dispatch( setDrawer( 'Download Track' ) );
+    this.props.dispatch( setDrawer( 'USBRS Routes' ) );
   }
-
+/*
   onSaveTrack( id, pkg ) {
     this.props.dispatch( fetchTrack( id, pkg ) );
   }
@@ -31,6 +35,12 @@ class DownloadTrackPage extends Component {
   onActivationTrack( id, val ) {
     const fn = val ? activateTrack : deactivateTrack;
     this.props.dispatch( fn( id ) );
+  }*/
+
+
+  jumpToTrackLocation(trackBoundingBox){
+      this.props.dispatch(setFitBoundingBox(trackBoundingBox));
+      history.push( '/' ); 
   }
 
   render() {
@@ -46,7 +56,7 @@ class DownloadTrackPage extends Component {
       /*eslint-disable no-unused-vars*/
       let progressBar;
       /*eslint-enable no-unused-vars*/
-      if ( track.isFetching === true ) {
+      /*if ( track.isFetching === true ) {
         progressBar = (
           <LinearProgress indeterminate={ true } />
         );
@@ -54,9 +64,9 @@ class DownloadTrackPage extends Component {
         progressBar = (
           <LinearProgress progress={ track.isFetching * 100 } />
         );
-      }
+      }*/
 
-      // TODO: Refactor this using O-O principles
+      /*TODO: Refactor this using O-O principles
       let downloadButtonText;
       let isSave;
       let action;
@@ -72,44 +82,50 @@ class DownloadTrackPage extends Component {
         downloadButtonText = 'Save';
         isSave = true;
         action = this.onSaveTrack.bind( this, id, track.pkg );
-      }
+      }*/
+
+      /* onTouchTap={  } */
+      /* secondary={ track.active } */ 
+      /* this.onActivationTrack.bind( this, id, !track.active)  */
+      /* subtitle={ `${track.sizeMiB} MiB` } */
+      /* <img src='./img/usbr20.png' /> */
 
       return (
-        <Card key={ id }
-          style={ { margin: 24 } }>
-          <CardMedia overlay={ <CardTitle title={ track.name }
-                                 subtitle={ `${track.sizeMiB} MiB` } /> }>
-            <img src='./img/usbr20.png' />
+        <Card
+          key={ id }
+          style={ { margin: 40 } }>
+
+          <CardMedia 
+          overlay={ <CardTitle title={ track.name } subtitle="United States Bicycle Route"/> }>
+          <img src = { `./img/${track._id}.png` } />
           </CardMedia>
+          
           <CardText>
             { track.description }
           </CardText>
+          
           <CardActions>
-            <RaisedButton secondary={ isSave }
-              primary={ !isSave }
-              onTouchTap={ action }
-              label={ downloadButtonText }
-              icon={ <FontIcon className='material-icons'>cloud_download</FontIcon> } />
             <RaisedButton id={ id }
-              label='Show Track'
-              secondary={ track.active }
-              onTouchTap={ this.onActivationTrack.bind( this, id, !track.active ) }
+              label='Show Route'
+              onTouchTap={ this.jumpToTrackLocation.bind(this, track.boundingBox) }
               icon={ <FontIcon className='material-icons'>visibility</FontIcon> } />
           </CardActions>
+
         </Card>
         );
     } );
 
+    
     return (
       <Page className="layout__section">
-		<DeviceStorage downloaded={ downloaded } />
 		{ rows }
       </Page>
       );
-  }
+  }//end render
 }
 
 const select = state => {
   return { tracks: state.tracks.toJS() };
 };
-export default connect( select )( DownloadTrackPage );
+/* ( select ) */
+export default connect ( select ) ( RoutePage );

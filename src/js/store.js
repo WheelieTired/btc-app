@@ -78,7 +78,7 @@ let debugPrintTransformer = createTransform(
 */
 
 // Don't persist the drawer state (basically the title on the nav bar).
-persistStore(theStore, {transforms: [immutableTransformer/*, debugPrintTransformer*/], blacklist: ['drawer', 'map', 'network', 'notifications']}, () => {
+persistStore(theStore, {transforms: [immutableTransformer/*, debugPrintTransformer*/], blacklist: ['drawer', 'map', 'network', 'notifications', 'tracks']}, () => {
   // This is called once the store is loaded.
   if (!theStore.getState().settings.shownOnboarding) {
     theStore.dispatch(setShownOnboarding(true));

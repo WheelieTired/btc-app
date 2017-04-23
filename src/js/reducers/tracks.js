@@ -19,6 +19,20 @@ const DEACTIVATE = 'btc-app/tracks/DEACTIVATE';
  * TODO: Obtain tracks from the database
  */
 const initState = fromJS( {
+  'usbr-1': {
+    _id: 'usbr-1',
+    name: 'USBR 1',
+    number: 20,
+    description: 'This route travels between Key West, FL and Calais, ME.',
+    pkg: 'usbr20.mbtiles',
+    status: 'absent',
+    isFetching: false,
+    active: false,
+    sizeMiB: 4.7,
+    sha256: null, // TODO: implement digest check to verify downloads
+    boundingBox: [[47.320206883852414, -66.81884765625001], [24.544624809190402, -81.77261352539062]],
+    waypoints: usbr20 // See above
+  },
   'usbr-20': {
     _id: 'usbr-20',
     name: 'USBR 20',
@@ -30,19 +44,7 @@ const initState = fromJS( {
     active: false,
     sizeMiB: 4.7,
     sha256: null,
-    waypoints: usbr20 // See above
-  },
-  'usbr-1': {
-    _id: 'usbr-1',
-    name: 'USBR 1',
-    number: 20,
-    description: 'This route travels up to Bar Harbor.',
-    pkg: 'usbr20.mbtiles',
-    status: 'absent',
-    isFetching: false,
-    active: false,
-    sizeMiB: 4.7,
-    sha256: null, // TODO: implement digest check to verify downloads
+    boundingBox: [[44.13787021128985, -86.57020568847658], [42.69505333013366, -82.3909378051758]],
     waypoints: usbr20 // See above
   }
 } );

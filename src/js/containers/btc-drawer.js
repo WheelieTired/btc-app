@@ -70,11 +70,11 @@ export class BtcDrawer extends Component {
       badge: publishable
     }, {
       divider: true
-    },/* {
-      link: 'download-track',
-      title: 'Download Track',
+    }, {
+      link: 'routes',
+      title: 'USBRS Routes',
       icon: 'timeline'
-    },*/ {
+    }, {
       link: 'settings',
       title: 'Settings',
       icon: 'settings'
