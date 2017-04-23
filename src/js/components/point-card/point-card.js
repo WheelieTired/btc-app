@@ -229,6 +229,18 @@ getAverageStarRating(comments){
             onTouchTap={ this.navigateNoId( 'login' ) } />
         );
       }
+    } else {
+      if (this.props.login.loggedIn == true) {
+        flag = (
+          <MenuItem primaryText='Flag'
+            onTouchTap={ this.navigate( 'flag-point' ) } />
+        );
+      } else {
+        flag = (
+          <MenuItem primaryText='Flag'
+            onTouchTap={ this.navigateNoId( 'login' ) } />
+        );
+      }
     }
 
     const button = (
