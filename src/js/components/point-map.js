@@ -89,7 +89,7 @@ export class PointMap extends Component {
   }
 
   render() {
-    const {points, tracks, settings, map, deselectMarker, selectMarker, filters, children} = this.props;
+    const {points, tracks, settings, map, deselectMarker, selectMarker, filters, children, setFitBoundingBox} = this.props;
 
     let markers = points.filter( point => {
       if ( point.isFetching ) {
@@ -175,6 +175,21 @@ export class PointMap extends Component {
           <CircularProgress size={ 2 } />
         </div>
       );
+    } else if (map.fitBoundingBox) {
+      view = (
+        <Map className={ this.props.className || 'map' }
+          bounds= { map.fitBoundingBox }
+          onMove={ this.props.onLeafletMove }
+          onMoveend={ this.onMapMoved }
+          onClick={ this.props.addPoint ? noop : deselectMarker }>
+          { circleMarker }
+          { tileLayer }
+          { markers }
+          { trackViews }
+          { children }
+        </Map>
+      );
+      setFitBoundingBox(null);
     } else {
       view = (
         <Map className={ this.props.className || 'map' }

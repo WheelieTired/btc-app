@@ -24,7 +24,7 @@ import ThanksPageForgotPassword from './containers/thanks-page-forgot-password';
 import ThanksPageResetPassword from './containers/thanks-page-reset-password';
 import ThanksPage from './containers/thanks-page';
 import LoadingPage from './containers/loading-page';
-import DownloadTrackPage from './containers/download-track-page';
+import RoutePage from './containers/route-page';
 import FilterPage from './containers/filter-page';
 import SettingsPage from './containers/settings-page';
 import PublishPage from './containers/publish-page';
@@ -161,8 +161,8 @@ document.addEventListener( 'deviceReady', ( ) => {
               <Route path="name"
                 component={ AlertNameDescription } />
             </Route>
-            <Route path="/download-track"
-              component={ DownloadTrackPage } />
+            <Route path="/routes"
+              component={ RoutePage } />
             <Route path="/filter"
               component={ FilterPage } />
           </Route>
