@@ -30,6 +30,7 @@ export class PointMap extends Component {
   componentDidMount() {
     const {map, setGeoLocation, setMapCenter, setMapLoading, setMapZoom} = this.props;
 
+    //path to the leaflet images folder
     Leaflet.Icon.Default.imagePath = "img/icons/";
 
     if ( map.loading ) {
@@ -116,12 +117,33 @@ export class PointMap extends Component {
           selectMarker( point );
         }
       };
-      return (
+      if(Point.uri( point._id ).type === 'alert') {
+        var alertIcon = Leaflet.icon({
+            iconUrl: 'img/icons/alert-icon.png',
+            shadowUrl: 'img/icons/marker-shadow.png',
+
+            iconSize:     [25, 38],     // size of the icon
+            shadowSize:   [41, 41],     // size of the shadow
+            iconAnchor:   [14, 38],     // point of the icon which will correspond to marker's location
+            shadowAnchor: [15, 41],     // the same for the shadow
+            popupAnchor:  [0, 0]        // point from which the popup should open relative to the iconAnchor
+        });
+        return (
+        <Marker key={ point._id }
+          radius={ 10 }
+          position={ point.location }
+          onclick={ onClick }
+          icon = { alertIcon } />
+        );
+      }
+      else {
+        return (
         <Marker key={ point._id }
           radius={ 10 }
           position={ point.location }
           onclick={ onClick } />
         );
+      }
     } );
 
     // Display waypoints for active tracks
