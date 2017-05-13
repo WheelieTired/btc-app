@@ -10,6 +10,8 @@ const LOGOUT = 'btc-app/account/LOGOUT';
 const initState = {
   loggedIn: false,
   email: null,
+  firstName: null,
+  lastName: null,
   fetching: false, // true during login request
   received: false, // false until login response received
   token: null,
@@ -31,6 +33,8 @@ export default function reducer( state = initState, action ) {
     return {...state,
       loggedIn: action.loggedIn,
       email: action.error ? null : state.email,
+      firstName: action.error ? null : action.firstName,
+      lastName: action.error ? null : action.lastName,
       fetching: false,
       token: action.token,
       roles: action.roles,
@@ -78,7 +82,7 @@ export function login( attrs, success ) {
         .end( ( error, response ) => {
           switch ( response.statusCode ) {
           case 200:
-            resolve( response.body.auth_token );
+            resolve( { token:response.body.auth_token, firstName:response.body.first_name, lastName:response.body.last_name } );
             break;
           case 400:
           default:
@@ -86,13 +90,13 @@ export function login( attrs, success ) {
             break;
           }
         } );
-    } ).then( auth_token => {
-      dispatch( recieveLogin( auth_token ) );
+    } ).then( infoDict => {
+      dispatch( recieveLogin( infoDict.token, infoDict.firstName, infoDict.lastName ) );
       if ( success ) {
         success();
       }
     }, error => {
-      dispatch( recieveLogin( null, error ) );
+      dispatch( recieveLogin( null, null, null, error ) );
     } );
   };
 }
@@ -109,12 +113,14 @@ function requestLogin( email ) {
 
 // Notify the store that a login request has completed, and pass in
 // either the new credentials or the error message
-function recieveLogin( token, error ) {
+function recieveLogin( token, firstName, lastName, error ) {
   const action = { type: RECEIVE_LOGIN, token, error };
   if ( error ) {
     action.loggedIn = false;
   } else {
     action.loggedIn = true;
+    action.firstName = firstName;
+    action.lastName = lastName;
   }
   return action;
 }
