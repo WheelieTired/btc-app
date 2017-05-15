@@ -54,6 +54,7 @@ Have [npm](https://www.npmjs.com) installed on your development machine (availab
 _Look at the `package.json` for other commands!_  
 
 ### Other Information
+- Explanation of custom map server exploration: https://github.com/Tour-de-Force/btc-app/issues/222
 - The script `npm run format` ensures well formated code. Run `npm run format:replace` will make these changes
   - The current formatter suggest unix line endings
 - The script `npm run lint` will reveal js
