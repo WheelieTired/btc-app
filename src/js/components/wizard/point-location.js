@@ -46,6 +46,10 @@ export class PointLocation extends WizardPage {
 
   // The parent div has no styling as both children are absolutely positioned
   getPageContent() {
+    var markerClass = "crosshairs__marker";
+    if (this.props.isAlert) {
+      markerClass = "crosshairs__marker_alert";
+    }
     return (
       <div>
         <ConnectedPointMap addPoint
@@ -53,7 +57,7 @@ export class PointLocation extends WizardPage {
           afterMoved={ this.updateLocation } />
         <div className="crosshairs">
           <div className="crosshairs__shadow" />
-          <div className="crosshairs__marker" />
+          <div className={ markerClass } />
         </div>
       </div>
       );

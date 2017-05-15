@@ -85,6 +85,25 @@
     50% {top: -15px;}
     100% {top: 0px;}
 }
+/*
+ * The bobbing alert marker
+ */
+.crosshairs__marker_alert {
+    position: absolute;
+    background-image: url('../img/icons/alert-icon.png');
+    height: 38px;
+    width: 25px;
+    left: 0px;
+    top: 3px;
+    -webkit-animation-name: adding-alert;
+    -webkit-animation-duration: 2s;
+    -webkit-animation-iteration-count: infinite;
+}
+@-webkit-keyframes adding-alert {
+    0% {top: 3px;}
+    50% {top: -12px;}
+    100% {top: 3px;}
+}
 
 .leaflet-control-attribution {
     /* We show map attribution on the about page. */

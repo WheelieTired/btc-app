@@ -64,7 +64,8 @@ export class AddAlertPage extends PointPage {
     return {
       ...super.mapStateToProps( state ),
       map: state.map, // You need a map to place an alert
-      types: alertTypes // You need to choose an alert type
+      types: alertTypes, // You need to choose an alert type
+      isAlert: true
     };
   }
 
