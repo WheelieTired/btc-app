@@ -50,6 +50,9 @@ Have [npm](https://www.npmjs.com) installed on your development machine (availab
 1. Set your `NODE_ENV` environment variable to `production` if you want the build to point to AWS
 2. `npm run dev` (you can stop the local server once it starts)
 3. Copy contents of `platforms/browser/www` to your web server's documents directory (all served files are static)
+4. The web server document directory is the btc-app-web bucket on AWS.
+5. Set all the files in this directory to world readable.
+6. If you want the website to update faster, run an invalidation on `/*` in CloudFront.
 
 _Look at the `package.json` for other commands!_  
 
