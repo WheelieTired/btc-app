@@ -75,7 +75,6 @@ export class RatingPointCard extends PointCard {
 
   onComment( values ) {
     const { updateService } = this.props;
-    console.log(this.props.login);
     let usersName = this.props.login.firstName + " " + this.props.login.lastName.slice(0, 1) + '.';
     const comment = {
       user: usersName,
