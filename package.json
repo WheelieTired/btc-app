@@ -10,9 +10,9 @@
     "debug:ios-sim": "cordova build ios",
     "dev": "shell-exec --colored-output \"npm run watch\" \"npm run livereload\"",
     "doc": "docco src/js/*.js src/js/*/*.js -o docs/generated",
-    "format": "esformatter --diff \"?(src|test)/js/**/*.js\"",
-    "format:replace": "esformatter -i \"?(src|test)/js/**/*.js\"",
-    "lint": "eslint \"?(src|test)/js/**/*.js\"",
+    "format": "esformatter --diff \"src/js/**/*.js\"",
+    "format:replace": "esformatter -i \"src/js/**/*.js\"",
+    "lint": "eslint \"src/js/**/*.js\"",
     "livereload": "livereload \"platforms/browser/www/\"",
     "postbuild": "cp -r src/index.html src/img src/fonts www/",
     "postdebug:android-device": "cp \"./platforms/android/build/outputs/apk/android-debug.apk\" \"./bicycle-touring-companion-debug.apk\"",
@@ -138,7 +138,7 @@
     "skin-deep": "https://github.com/tour-de-force/skin-deep",
     "watchify": "~3.9.0"
   },
-  "optionalDependencies" : {
+  "optionalDependencies": {
     "ios-deploy": "~1.9.1"
   }
 }

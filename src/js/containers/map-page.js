@@ -5,6 +5,7 @@ import { Paper } from 'material-ui';
 import PointMap from '../components/point-map';
 import ConnectedPointMap from './connected-point-map';
 import MapButtons from '../components/map-buttons';
+import { login } from '../reducers/account/login';
 /*eslint-enable no-unused-vars*/
 
 import { bindActionCreators } from 'redux';
@@ -13,7 +14,6 @@ import { connect } from 'react-redux';
 import { setDrawer } from '../reducers/btc-drawer';
 import { loadPoint, flagPoint, updateService } from '../reducers/points';
 import { getCoverPhotoURLForPointId } from '../reducers/points';
-import { login } from '../reducers/account/login';
 
 import history from '../history';
 
@@ -85,16 +85,14 @@ class MapPage extends Component {
     const props = {
       deselectMarker: MapPage.deselectMarker,
       selectMarker: point => MapPage.navigateWithId( 'peek-point', point )
-    };  
+    };
     return (
       <div className="layout__section__fullflex">
         <ConnectedPointMap className="map map--browse-mode"
           { ...props } />
-        <MapButtons 
-        buttons={ buttons }
-        history={ history }
-        { ...this.props.MapButtons}
-           />
+        <MapButtons buttons={ buttons }
+          history={ history }
+          { ...this.props.MapButtons} />
         { this.mapPropsOnCard() }
       </div>
       );
