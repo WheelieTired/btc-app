@@ -12,7 +12,7 @@ android:
 notifications:
   slack: adventure-cycling:tk7JVJnQzyDeWadDzfdxcZYT
 before_install:
-- nvm install 4.2.1
+- nvm install stable
 install:
 - npm install
 before_script:
