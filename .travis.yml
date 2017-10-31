@@ -1,8 +1,7 @@
 
 branches:
   only:
-    - master
-    - /^v[0-9]/ # Build tags too! (Travis checks for tags as branch names)
+    - /.*/
 
 language: android
 android:
@@ -36,7 +35,7 @@ deploy:
     - "bicycle-touring-companion.apk"
     - "bicycle-touring-companion-debug.apk"
   on:
-    repo: bikelomatic-complexity/app
+    repo: WheelieTired/btc-app
     branch: master
     tags: true
 
