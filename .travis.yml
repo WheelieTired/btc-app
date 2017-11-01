@@ -2,13 +2,15 @@
 branches:
   only:
     - /.*/
-language: node_js
-node_js:
-  - "node"
-notifications:
-  slack: adventure-cycling:tk7JVJnQzyDeWadDzfdxcZYT
+language: android
+android:
+  components:
+  - platform-tools
+  - build-tools-21.1.1 # >=19.1.0, and 21.1.1 is preinstalled
+  - android-22
+
 before_install:
-  - sudo apt-get update
+- nvm install 4.2.1
 install:
 - npm install
 before_script:
