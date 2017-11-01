@@ -7,6 +7,8 @@ node_js:
   - "node"
 notifications:
   slack: adventure-cycling:tk7JVJnQzyDeWadDzfdxcZYT
+before_install:
+  - sudo apt-get update
 install:
 - npm install
 before_script:
