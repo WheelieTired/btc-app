@@ -2,17 +2,15 @@
 branches:
   only:
     - /.*/
-
 language: android
 android:
   components:
   - platform-tools
   - build-tools-21.1.1 # >=19.1.0, and 21.1.1 is preinstalled
   - android-22
-notifications:
-  slack: adventure-cycling:tk7JVJnQzyDeWadDzfdxcZYT
+
 before_install:
-- nvm install stable
+- nvm install 4.2.1
 install:
 - npm install
 before_script:
