@@ -64,7 +64,7 @@
   "dependencies": {
     "blob-util": "~1.2.1",
     "bowser": "~1.6.0",
-    "btc-models": "https://github.com/tour-de-force/btc-models#built",
+    "btc-models": "git+https://github.com/tour-de-force/btc-models.git#built",
     "classnames": "~2.2.5",
     "docuri": "~4.2.2",
     "history": "~4.5.1",
@@ -79,8 +79,8 @@
     "react": "~15.4.2",
     "react-dom": "~15.4.2",
     "react-hammerjs": "~0.5.0",
-    "react-leaflet": "~1.1.0",
     "react-js-pagination": "~2.0.2",
+    "react-leaflet": "~1.1.0",
     "react-redux": "~5.0.3",
     "react-router": "~3.0.2",
     "react-tap-event-plugin": "~2.0.1",
@@ -135,10 +135,10 @@
     "redux-devtools": "~3.3.2",
     "shell-executor": "~4.0.0",
     "sinon": "~1.17.7",
-    "skin-deep": "https://github.com/tour-de-force/skin-deep",
+    "skin-deep": "git+https://github.com/tour-de-force/skin-deep.git",
     "watchify": "~3.9.0"
   },
-  "optionalDependencies" : {
+  "optionalDependencies": {
     "ios-deploy": "~1.9.1"
   }
 }
