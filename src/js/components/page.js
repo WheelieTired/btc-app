@@ -1,5 +1,6 @@
 /*eslint-disable no-unused-vars*/
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 /*eslint-enable no-unused-vars*/
 
 import '../../css/page.css';
@@ -42,5 +43,5 @@ export class LetterheadPage extends Component {
   }
 }
 
-LetterheadPage.propTypes = { logo: React.PropTypes.string };
+LetterheadPage.propTypes = { logo: PropTypes.string };
 LetterheadPage.defaultProps = { logo: 'img/advc-big.jpg' };
