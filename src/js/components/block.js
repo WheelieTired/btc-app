@@ -1,6 +1,7 @@
 /*eslint-disable no-unused-vars*/
 import React, { Component } from 'react';
 import { Paper, RaisedButton, FlatButton, TextField } from 'material-ui';
+import PropTypes from 'prop-types'
 /*eslint-enable no-unused-vars*/
 
 import classNames from 'classnames';
@@ -180,18 +181,18 @@ FormBlock.defaultProps = {
   thinActionButton: false
 };
 FormBlock.propTypes = {
-  header: React.PropTypes.oneOfType( [
-    React.PropTypes.string,
-    React.PropTypes.object
+  header: PropTypes.oneOfType( [
+    PropTypes.string,
+    PropTypes.object
   ] ),
-  footer: React.PropTypes.oneOfType( [
-    React.PropTypes.string,
-    React.PropTypes.object
+  footer: PropTypes.oneOfType( [
+    PropTypes.string,
+    PropTypes.object
   ] ),
-  actionText: React.PropTypes.string,
-  onAction: React.PropTypes.func,
-  problemText: React.PropTypes.string,
-  validation: React.PropTypes.array
+  actionText: PropTypes.string,
+  onAction: PropTypes.func,
+  problemText: PropTypes.string,
+  validation: PropTypes.array
 };
 
 // The `Block` is a piece of material-ui paper that has optional header and
@@ -247,14 +248,14 @@ Block.defaultProps = {
   zDepth: 2
 };
 Block.propTypes = {
-  problem: React.PropTypes.bool,
-  header: React.PropTypes.oneOfType( [
-    React.PropTypes.string,
-    React.PropTypes.object
+  problem: PropTypes.bool,
+  header: PropTypes.oneOfType( [
+    PropTypes.string,
+    PropTypes.object
   ] ),
-  footer: React.PropTypes.oneOfType( [
-    React.PropTypes.string,
-    React.PropTypes.object
+  footer: PropTypes.oneOfType( [
+    PropTypes.string,
+    PropTypes.object
   ] )
 };
 
