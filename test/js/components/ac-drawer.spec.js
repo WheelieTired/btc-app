@@ -38,7 +38,7 @@ describe( '<Drawer />', function() {
 		      ) );
 		
 		    const instance = tree.getMountedInstance();
-		    instance.open={ true };
+		    instance.state.open = true;
 		    instance.hideNav();
 	    expect( instance.state.open ).to.be.false;
 	  } );
