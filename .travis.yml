@@ -36,7 +36,3 @@ script:
 #    repo: WheelieTired/btc-app
 #    branch: master
 #    tags: true
-
-cache:
-  directories:
-    - node_modules
