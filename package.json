@@ -53,18 +53,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tour-de-force/btc-app.git"
+    "url": "git+https://github.com/WheelieTired/btc-app.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/tour-de-force/btc-app/issues"
+    "url": "https://github.com/WheelieTired/btc-app/issues"
   },
-  "homepage": "https://github.com/tour-de-force/btc-app#readme",
+  "homepage": "https://github.com/WheelieTired/btc-app#readme",
   "dependencies": {
     "blob-util": "~1.3.0",
     "bowser": "~1.8.1",
-    "btc-models": "https://github.com/tour-de-force/btc-models#built",
+    "btc-models": "https://github.com/WheelieTired/btc-models#built",
     "classnames": "~2.2.5",
     "docuri": "~4.2.2",
     "history": "~4.7.2",
