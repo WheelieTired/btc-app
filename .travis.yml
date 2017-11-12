@@ -10,7 +10,7 @@ android:
   - android-22
 
 before_install:
-- nvm install 9.1.0
+- nvm install 4.2.0
 - npm install leveldown@1.5.0
 install:
 - npm install
