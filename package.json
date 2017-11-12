@@ -136,7 +136,7 @@
     "redux-devtools": "~3.4.0",
     "shell-executor": "~4.0.0",
     "sinon": "~4.1.0",
-    "skin-deep": "https://github.com/tour-de-force/skin-deep",
+    "skin-deep": "https://github.com/WheelieTired/skin-deep",
     "watchify": "~3.9.0"
   },
   "optionalDependencies": {
