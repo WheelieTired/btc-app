@@ -10,7 +10,7 @@ android:
   - android-22
 
 before_install:
-- nvm install 4.2.1
+- nvm install 9.1.0
 install:
 - npm install
 before_script:
@@ -36,7 +36,3 @@ script:
 #    repo: WheelieTired/btc-app
 #    branch: master
 #    tags: true
-
-cache:
-  directories:
-    - node_modules
