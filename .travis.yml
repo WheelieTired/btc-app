@@ -11,7 +11,7 @@ android:
 
 before_install:
 - nvm install 9.1.0
-- nvm use 9.1.0
+- npm install leveldown@1.5.0
 install:
 - npm install
 before_script:
