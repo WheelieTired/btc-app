@@ -89,7 +89,7 @@ class MapPage extends Component {
     };
     return (
       <div className="layout__section__fullflex">
-        <VectorMap className="map map--browse-mode" />
+        <VectorMap className="map map--browse-mode" { ...props } { ...this.props.pointMap } {...this.props.pointMapActions}/>
         <MapButtons buttons={ buttons }
           history={ history }
           { ...this.props.MapButtons} />
