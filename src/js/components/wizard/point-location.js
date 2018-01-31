@@ -1,11 +1,12 @@
 /*eslint-disable no-unused-vars*/
 import React, { Component } from 'react';
 
-import ConnectedPointMap from '../../containers/connected-point-map';
+// import ConnectedPointMap from '../../containers/connected-point-map';
 /*eslint-enable no-unused-vars*/
 
 import WizardPage from './wizard-page';
 import { bindAll } from 'lodash';
+import VectorMap from '../../containers/vector-map';
 
 import '../../../css/map.css';
 
@@ -52,13 +53,7 @@ export class PointLocation extends WizardPage {
     }
     return (
       <div>
-        <ConnectedPointMap addPoint
-          className='map map--wizard-mode'
-          afterMoved={ this.updateLocation } />
-        <div className='crosshairs'>
-          <div className='crosshairs__shadow' />
-          <div className={ markerClass } />
-        </div>
+         <VectorMap className="map map--wizard-mode"/>
       </div>
       );
   }

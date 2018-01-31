@@ -8,6 +8,8 @@ import PointLayer from '../components/point-layer';
 import { pick, values } from 'lodash';
 import { Point } from 'btc-models';
 
+import '../../../node_modules/mapbox-gl/dist/mapbox-gl.css';
+
 export class VectorMap extends Component {
 
 
@@ -40,6 +42,7 @@ export class VectorMap extends Component {
     const Map = ReactMapboxGl({
       accessToken: "pk.eyJ1IjoiYWNhLW1hcGJveCIsImEiOiJjajhkbmNjN2YwcXg0MnhzZnU2dG93NmdqIn0.jEUoPlUBoAsHAZw5GKpgiQ"
     });
+    const center = [-77.6109,43.1610];
     let markers = points.filter( point => {
       if ( point.isFetching ) {
         return false;
@@ -104,6 +107,7 @@ export class VectorMap extends Component {
           height: "100vh",
           width: "100vw"
         }}
+        center={center}
         onStyleLoad={this.setVMap}>
         { markers }
       </Map>
