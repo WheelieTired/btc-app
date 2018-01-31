@@ -1,3 +1,6 @@
+sudo: required
+dist: trusty
+group: deprecated-2017Q4
 
 branches:
   only:
@@ -10,7 +13,7 @@ android:
   - android-22
 
 before_install:
-- nvm install 4.2.1
+- nvm install 9.1.0
 install:
 - npm install
 before_script:
