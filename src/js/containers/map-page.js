@@ -4,6 +4,7 @@ import { Paper } from 'material-ui';
 
 import PointMap from '../components/point-map';
 import ConnectedPointMap from './connected-point-map';
+import VectorMap from './vector-map';
 import MapButtons from '../components/map-buttons';
 import { login } from '../reducers/account/login';
 /*eslint-enable no-unused-vars*/
@@ -88,8 +89,7 @@ class MapPage extends Component {
     };
     return (
       <div className="layout__section__fullflex">
-        <ConnectedPointMap className="map map--browse-mode"
-          { ...props } />
+        <VectorMap className="map map--browse-mode" { ...props } { ...this.props.pointMap } {...this.props.pointMapActions}/>
         <MapButtons buttons={ buttons }
           history={ history }
           { ...this.props.MapButtons} />
