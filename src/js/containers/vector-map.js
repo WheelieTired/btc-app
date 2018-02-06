@@ -43,7 +43,7 @@ export class VectorMap extends Component {
       accessToken: "pk.eyJ1IjoiYWNhLW1hcGJveCIsImEiOiJjajhkbmNjN2YwcXg0MnhzZnU2dG93NmdqIn0.jEUoPlUBoAsHAZw5GKpgiQ"
     });
     const center = [-77.6109,43.1610];
-    let markers = points.filter( point => {
+    let features = points.filter( point => {
       if ( point.isFetching ) {
         return false;
       }
@@ -83,20 +83,20 @@ export class VectorMap extends Component {
         // } );
         var coordinates = [point.location[1], point.location[0]];
         return (
-          <Marker key={ point._id }
+          <Feature key={ point._id }
             coordinates={ coordinates }
             onClick={ onClick }>
-            <img src='img/icons/alert-icon.png'/> 
-          </Marker>
+            <img src='img/icons/alert-icon.png'/>
+          </Feature>
           );
       } else {
         var coordinates = [point.location[1], point.location[0]];
         return (
-          <Marker key={ point._id }
+          <Feature key={ point._id }
             coordinates={ coordinates }
             onClick={ onClick }>
-            <img src='img/icons/marker-icon.png'/> 
-          </Marker>
+            <img src='img/icons/marker-icon.png'/>
+          </Feature>
           );
       }
     } );
@@ -109,7 +109,9 @@ export class VectorMap extends Component {
         }}
         center={center}
         onStyleLoad={this.setVMap}>
-        { markers }
+        <Layer type="circle" id="points">
+        { features }
+        </Layer>
       </Map>
     );
   }
