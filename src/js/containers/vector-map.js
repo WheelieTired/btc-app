@@ -60,7 +60,11 @@ export class VectorMap extends Component {
     const Map = ReactMapboxGl({
       accessToken: "pk.eyJ1IjoiYWNhLW1hcGJveCIsImEiOiJjajhkbmNjN2YwcXg0MnhzZnU2dG93NmdqIn0.jEUoPlUBoAsHAZw5GKpgiQ"
     });
-    const center = [-77.6109, 43.1610];
+    this.myLocation();
+    var center = [-77.6109, 43.1610];
+    if(typeof this.centercoordinates != 'undefined'){
+      center = this.centercoordinates;
+    }
     let markers = points.filter(point => {
       if (point.isFetching) {
         return false;
@@ -127,7 +131,6 @@ export class VectorMap extends Component {
         }}
         center={center}
         onStyleLoad={(map) => {
-          this.myLocation();          
           map.addControl(new MapboxGl.NavigationControl());
           map.addControl(new MapboxGl.GeolocateControl({
             positionOptions: {
@@ -135,9 +138,6 @@ export class VectorMap extends Component {
             },
             trackUserLocation: true
           }));
-          map.flyTo({
-            center: this.centercoordinates
-          });
         }}>
         {markers}
       </Map>
