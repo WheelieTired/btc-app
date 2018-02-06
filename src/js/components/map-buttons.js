@@ -30,6 +30,7 @@ export class MapButtons extends Component {
         timeout: 5000
       }
     );
+    return coords;
   }
   render() {
     const buttons = this.props.buttons.map( ( button, index ) => {
@@ -38,7 +39,7 @@ export class MapButtons extends Component {
           <FloatingActionButton key={ button.method }
             mini={ true }
             className='mapButtons'
-            style={ { position: 'fixed', top: `${82 + 55 * index}px`, right: '10px' } }
+            style={ { position: 'fixed', top: `${30 + 55 * index}px`, right: '10px' } }
             onTouchTap={ () => this.myLocation() }>
             <FontIcon className='material-icons'>
               { button.icon }
@@ -50,7 +51,7 @@ export class MapButtons extends Component {
           <FloatingActionButton key={ button.page }
             mini={ true }
             className='mapButtons'
-            style={ { position: 'fixed', top: `${82 + 55 * index}px`, right: '10px' } }
+            style={ { position: 'fixed', bottom: `${30 + 55 * index}px`, right: '10px' } }
             onTouchTap={ () => history.push( button.page ) }>
             <FontIcon className='material-icons'>
               { button.icon }
