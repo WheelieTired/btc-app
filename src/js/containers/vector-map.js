@@ -1,5 +1,5 @@
 // ES6
-import ReactMapboxGl from "react-mapbox-gl";
+import ReactMapboxGl, { Layer, Feature, Marker } from "react-mapbox-gl";
 import MapboxGl from "mapbox-gl";
 
 import React, { Component } from 'react';
