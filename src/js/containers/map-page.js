@@ -73,16 +73,10 @@ class MapPage extends Component {
   // Display the map in browse mode with any child PointCard on top.
   // See map.css and point-card.css to learn how the elements are displayed.
   render() {
-    const buttons = [ /*{
-      page: 'list',
-      icon: 'list'
-    },*/ {
+    const buttons = [{
       page: 'filter',
       icon: 'filter_list'
-    }, {
-      method: 'centerMap',
-      icon: 'my_location'
-    } ];
+    }];
     const props = {
       deselectMarker: MapPage.deselectMarker,
       selectMarker: point => MapPage.navigateWithId( 'peek-point', point )
