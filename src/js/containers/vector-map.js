@@ -83,20 +83,20 @@ export class VectorMap extends Component {
         // } );
         var coordinates = [point.location[1], point.location[0]];
         return (
-          <Feature key={ point._id }
+          <Marker key={ point._id }
             coordinates={ coordinates }
             onClick={ onClick }>
             <img src='img/icons/alert-icon.png'/>
-          </Feature>
+          </Marker>
           );
       } else {
         var coordinates = [point.location[1], point.location[0]];
         return (
-          <Feature key={ point._id }
+          <Marker key={ point._id }
             coordinates={ coordinates }
             onClick={ onClick }>
-            <img src='img/icons/marker-icon.png'/>
-          </Feature>
+            <img src='img/icons/point.png'/>
+          </Marker>
           );
       }
     } );
@@ -109,9 +109,9 @@ export class VectorMap extends Component {
         }}
         center={center}
         onStyleLoad={this.setVMap}>
-        <Layer type="circle" id="points">
+
         { features }
-        </Layer>
+
       </Map>
     );
   }
